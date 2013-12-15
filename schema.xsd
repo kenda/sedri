@@ -3,7 +3,7 @@
   <xs:element name="server">
     <xs:complexType>
       <xs:sequence>
-	<xs:element minOccurs="0" maxOccurs="unbounded" ref="endpoint"/>
+	<xs:element minOccurs="1" maxOccurs="unbounded" ref="endpoint"/>
       </xs:sequence>
       <xs:attribute name="port" type="xs:integer"/>
     </xs:complexType>
@@ -11,7 +11,7 @@
   <xs:element name="endpoint">
     <xs:complexType>
       <xs:all>
-        <xs:element name="url"  type="xs:string"/>
+        <xs:element name="url" type="xs:string"/>
         <xs:element ref="params" minOccurs="0" />
 	<xs:element ref="preprocessors" minOccurs="0" />
 	<xs:element ref="postprocessors" minOccurs="0" />
@@ -47,8 +47,8 @@
 	<xs:element name="source" maxOccurs="unbounded">
 	  <xs:complexType>
 	    <xs:all>
-              <xs:element name="url" type="xs:string"/>
-              <xs:element name="query" type="xs:string" />
+              <xs:element name="url" minOccurs="1" type="xs:string" />
+              <xs:element name="query" minOccurs="1" type="xs:string" />
 	    </xs:all>
 	  </xs:complexType>
 	</xs:element>
