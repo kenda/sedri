@@ -1,0 +1,94 @@
+<server port="8080">
+  <endpoint>
+    <url>/procure</url>
+    <params>
+      <param>drug</param>
+    </params>
+    <preprocessors>
+      <preprocessor>edu.leipzig.sedri.TestPreprocessor</preprocessor>
+    </preprocessors>
+    <postprocessors>
+      <postprocessor>edu.leipzig.sedri.TestPostprocessor</postprocessor>
+    </postprocessors>
+    <sources>
+      <source>
+	<url>http://drugbank.bio2rdf.org/sparql</url>
+	<query>
+	  construct{
+              &lt;http://bio2rdf.org/drugbank:$drug&gt; &lt;http://bio2rdf.org/drugbank_vocabulary:packager&gt; ?packager.
+	      ?packager ?p ?o.
+              &lt;http://bio2rdf.org/drugbank:$drug&gt; &lt;http://bio2rdf.org/drugbank_vocabulary:manufacturer&gt; ?manufacturer.
+	  } where {
+              &lt;http://bio2rdf.org/drugbank:$drug&gt; &lt;http://bio2rdf.org/drugbank_vocabulary:packager&gt; ?packager.
+	      ?packager ?p ?o.
+              &lt;http://bio2rdf.org/drugbank:$drug&gt; &lt;http://bio2rdf.org/drugbank_vocabulary:manufacturer&gt; ?manufacturer.
+	  }
+	</query>
+      </source>
+    </sources>
+    <format>TURTLE</format>
+  </endpoint>
+  <endpoint>
+    <url>/ddi</url>
+    <params>
+      <param>drug1</param>
+      <param>drug2</param>
+    </params>
+    <sources>
+      <source>
+	<url>http://drugbank.bio2rdf.org/sparql</url>
+	<query>
+ PREFIX db: &lt;http://bio2rdf.org/drugbank:&gt;
+    DESCRIBE ?ddi
+    WHERE {
+      ?ddi a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug-Drug-Interaction&gt; .
+      &lt;http://bio2rdf.org/drugbank:$drug1&gt; &lt;http://bio2rdf.org/drugbank_vocabulary:ddi-interactor-in&gt; ?ddi .
+      &lt;http://bio2rdf.org/drugbank:$drug2&gt; &lt;http://bio2rdf.org/drugbank_vocabulary:ddi-interactor-in&gt; ?ddi .
+    }
+	</query>
+      </source>
+      <source>
+	<url>http://dbmi-icode-01.dbmi.pitt.edu:2020/sparql</url>
+	<query>
+    PREFIX db: &lt;http://dbmi-icode-01.dbmi.pitt.edu:2020/resource/&gt;
+    PREFIX dikbD2R: &lt;http://dbmi-icode-01.dbmi.pitt.edu:2020/vocab/resource/&gt;
+    PREFIX owl: &lt;http://www.w3.org/2002/07/owl#&gt;
+    PREFIX rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
+    CONSTRUCT {
+      ?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug-Drug-Interaction&gt;.
+      ?s &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; ?desc.
+      ?drug1 &lt;http://bio2rdf.org/drugbank_vocabulary:ddi-interactor-in&gt; ?s.
+      ?drug2 &lt;http://bio2rdf.org/drugbank_vocabulary:ddi-interactor-in&gt; ?s.
+    }
+    WHERE {
+      ?s &lt;http://www.w3.org/2000/01/rdf-schema#label&gt; ?desc.
+      ?drug1 owl:sameAs &lt;http://bio2rdf.org/drugbank:$drug1&gt;.
+      ?drug2 owl:sameAs &lt;http://bio2rdf.org/drugbank:$drug2&gt;.
+      {
+        ?s dikbD2R:ObjectDrugOfInteraction ?drug1.
+        ?s dikbD2R:PrecipitantDrugOfInteraction ?drug2.
+      } UNION {
+        ?s dikbD2R:ObjectDrugOfInteraction ?drug2.
+        ?s dikbD2R:PrecipitantDrugOfInteraction ?drug1.
+      }
+    }
+	</query>
+      </source>
+    </sources>
+    <format>TURTLE</format>
+  </endpoint>
+  <endpoint>
+    <url>/test</url>
+    <sources>
+      <source>
+	<url>http://dbpedia.org/sparql</url>
+	<query>select ?s where {?s a &lt;http://dbpedia.org/ontology/Drug&gt;} limit 10</query>
+      </source>
+      <source>
+	<url>http://drugbank.bio2rdf.org/sparql</url>
+	<query>select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} limit 10</query>
+      </source>
+    </sources>
+    <format>TURTLE</format>
+  </endpoint>
+</server>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="server">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element minOccurs="0" maxOccurs="unbounded" ref="endpoint"/>
+      </xs:sequence>
+      <xs:attribute name="port" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="endpoint">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="url"  type="xs:string"/>
+        <xs:element ref="params" minOccurs="0" />
+	<xs:element ref="preprocessors" minOccurs="0" />
+	<xs:element ref="postprocessors" minOccurs="0" />
+        <xs:element name="format" type="xs:string" />
+        <xs:element ref="sources" />
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="params">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="param" type="xs:string" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+    <xs:element name="preprocessors">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="preprocessor" type="xs:string" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="postprocessors">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="postprocessor" type="xs:string" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="sources">
+    <xs:complexType>
+      <xs:sequence>
+	<xs:element name="source" maxOccurs="unbounded">
+	  <xs:complexType>
+	    <xs:all>
+              <xs:element name="url" type="xs:string"/>
+              <xs:element name="query" type="xs:string" />
+	    </xs:all>
+	  </xs:complexType>
+	</xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
