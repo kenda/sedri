@@ -136,7 +136,11 @@ public class Webservice extends AbstractHandler{
 		    format = "RDF/XML";
 		    response.setContentType("application/rdf+xml;charset=utf-8");
 		}
-		
+		else if (accept.equals("application/ld+json")){
+		    format = "JSON-LD";
+		    response.setContentType("application/ld+json;charset=utf-8");
+		}
+
 		JenaJSONLD.init();
 		StringWriter output = new StringWriter();
 		model.write(output, format);
