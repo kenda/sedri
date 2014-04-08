@@ -13,12 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+import com.github.jsonldjava.jena.JenaJSONLD;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.ResultSet;
-
 /**
  * The webserver class handles the incoming HTTP requests.
  */
@@ -120,7 +120,7 @@ public class Webservice extends AbstractHandler{
 			    {System.out.println(e);}
 		    }
 		}
-		
+
 		// output the model in the given format
 		String accept = request.getHeader("accept");
 		String format = endpoint.getFormat();
@@ -136,7 +136,8 @@ public class Webservice extends AbstractHandler{
 		    format = "RDF/XML";
 		    response.setContentType("application/rdf+xml;charset=utf-8");
 		}
-
+		
+		JenaJSONLD.init();
 		StringWriter output = new StringWriter();
 		model.write(output, format);
 		
