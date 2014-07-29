@@ -1,7 +1,6 @@
 package edu.leipzig.sedri;
 
 import java.util.Hashtable;
-import java.io.StringWriter;
 import java.lang.UnsupportedOperationException;
 
 import com.hp.hpl.jena.query.Query;
@@ -11,7 +10,6 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
-import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 
 /**

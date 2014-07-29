@@ -2,7 +2,6 @@ package edu.leipzig.sedri;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.lang.Class;
@@ -11,14 +10,15 @@ import java.lang.reflect.Method;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
+
 import com.github.jsonldjava.jena.JenaJSONLD;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.query.QueryException;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.ResultSet;
 /**
  * The webserver class handles the incoming HTTP requests.
  */
@@ -33,7 +33,8 @@ public class Webservice extends AbstractHandler{
 	this.endpoints = server.getEndpoint();
     }
 
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) 
+    @SuppressWarnings("unchecked")
+	public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) 
         throws IOException, ServletException
     {
 	for( Endpoint endpoint : this.endpoints ){
@@ -57,10 +58,10 @@ public class Webservice extends AbstractHandler{
 		if (preprocessors != null){
 		    for (String classname : preprocessors.getPreprocessor()){
 			try{
-			    Class cl = Class.forName(classname);
+			    Class<?> cl = Class.forName(classname);
 			    Object o = cl.getConstructor().newInstance();
 			    Method m = cl.getMethod("process", Hashtable.class);
-			    paramTable = (Hashtable<String,String>) m.invoke(o, paramTable);
+			    paramTable = (Hashtable<String, String>) m.invoke(o, paramTable);
 			}
 			catch (ClassNotFoundException cnfe){
 			    System.out.println("Failed loading Preprocessor!");
@@ -108,7 +109,7 @@ public class Webservice extends AbstractHandler{
 		if (postprocessors != null){
 		    for (String classname : postprocessors.getPostprocessor()){
 			try{
-			    Class cl = Class.forName(classname);
+			    Class<?> cl = Class.forName(classname);
 			    Object o = cl.getConstructor().newInstance();
 			    Method m = cl.getMethod("process", Model.class);
 			    model = (Model) m.invoke(o, model);
