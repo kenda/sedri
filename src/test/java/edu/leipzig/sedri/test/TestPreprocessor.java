@@ -1,4 +1,4 @@
-package edu.leipzig.sedri;
+package edu.leipzig.sedri.test;
 
 import java.util.Hashtable;
 import edu.leipzig.sedri.PreprocessorInterface;

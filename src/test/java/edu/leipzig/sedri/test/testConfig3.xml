@@ -1,0 +1,49 @@
+<server port="9876">
+  <endpoint>
+    <url></url>
+    <params>
+      <param></param>
+    </params>
+    <preprocessors>
+      <preprocessor></preprocessor>
+    </preprocessors>
+    <postprocessors>
+    </postprocessors>
+    <sources>
+      <source>
+	<url>http://dbpedia.org/sparql</url>
+	<query>select ?s where {?s a &lt;http://dbpedia.org/ontology/Drug&gt;} limit $testLimit</query>
+      </source>
+      <source>
+	<url>http://drugbank.bio2rdf.org/sparql</url>
+	<query>select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} limit $testLimit</query>
+      </source>
+    </sources>
+    <format>JSON-LD</format>
+  </endpoint>
+  <endpoint>
+    <params>
+      <param>testLimit</param>
+      <param>testOrder</param>
+    </params>
+    <preprocessors>
+      <preprocessor>edu.leipzig.sedri.test.TestPreprocessor</preprocessor>
+      <preprocessor>edu.leipzig.sedri.test.WrongTestPreprocessor</preprocessor>
+    </preprocessors>
+    <postprocessors>
+      <postprocessor>edu.leipzig.sedri.test.TestPostprocessor</postprocessor>
+      <postprocessor>edu.leipzig.sedri.test.WrongTestPostprocessor</postprocessor>
+    </postprocessors>
+    <sources>
+      <source>
+	<url>http://dbpedia.org/sparql</url>
+	<query>select ?s where {?s a &lt;http://dbpedia.org/ontology/Drug&gt;} limit $testLimit</query>
+      </source>
+      <source>
+	<url>http://drugbank.bio2rdf.org/sparql</url>
+	<query>select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} limit $testLimit</query>
+      </source>
+    </sources>
+    <format>JSON-LD</format>
+  </endpoint>
+</server>

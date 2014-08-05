@@ -4,12 +4,6 @@
     <params>
       <param>drug</param>
     </params>
-    <preprocessors>
-      <preprocessor>edu.leipzig.sedri.TestPreprocessor</preprocessor>
-    </preprocessors>
-    <postprocessors>
-      <postprocessor>edu.leipzig.sedri.TestPostprocessor</postprocessor>
-    </postprocessors>
     <sources>
       <source>
 	<url>http://drugbank.bio2rdf.org/sparql</url>
@@ -73,20 +67,6 @@
       }
     }
 	</query>
-      </source>
-    </sources>
-    <format>TURTLE</format>
-  </endpoint>
-  <endpoint>
-    <url>/test</url>
-    <sources>
-      <source>
-	<url>http://dbpedia.org/sparql</url>
-	<query>select ?s where {?s a &lt;http://dbpedia.org/ontology/Drug&gt;} limit 10</query>
-      </source>
-      <source>
-	<url>http://drugbank.bio2rdf.org/sparql</url>
-	<query>select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} limit 10</query>
       </source>
     </sources>
     <format>TURTLE</format>

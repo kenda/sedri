@@ -1,4 +1,4 @@
-package edu.leipzig.sedri;
+package edu.leipzig.sedri.test;
 
 import com.hp.hpl.jena.rdf.model.Model;
 import edu.leipzig.sedri.PostprocessorInterface;
