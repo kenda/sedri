@@ -30,7 +30,7 @@ public class Webservice extends AbstractHandler{
     private List<Endpoint> endpoints;
     
     public Webservice(edu.leipzig.sedri.Server server){
-	this.endpoints = server.getEndpoint();
+    	this.endpoints = server.getEndpoint();
     }
 
     @SuppressWarnings("unchecked")
