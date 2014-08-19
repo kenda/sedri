@@ -88,7 +88,7 @@ public class Webservice extends AbstractHandler {
 					baseRequest.setHandled(true);
 					response.setStatus(HttpServletResponse.SC_OK);
 					response.getWriter().println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
-					response.getWriter().println("<h3 style=\"color: red;\">Param is missing!</h3>");
+					response.getWriter().println("<h3 style=\"color: red;\">Parameter is missing!</h3>");
 					return;
 				}
 
@@ -104,7 +104,14 @@ public class Webservice extends AbstractHandler {
 								sources.getSource().get(i).getQuery())
 								.isSelectType() == false) {
 							System.out.println("Incompatible query types");
-							throw new QueryException("Incompatible query types");
+							
+							response.setContentType("text/html;charset=utf-8");
+							baseRequest.setHandled(true);
+							response.setStatus(HttpServletResponse.SC_OK);
+							response.getWriter().println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+							response.getWriter().println("<h3 style=\"color: red;\">Incompatible query types!</h3>");
+							return;
+							//throw new QueryException("Incompatible query types");
 						}
 					}
 				} else {
@@ -117,7 +124,14 @@ public class Webservice extends AbstractHandler {
 										sources.getSource().get(i).getQuery())
 										.isDescribeType() == false)) {
 							System.out.println("Incompatible query types");
-							throw new QueryException("Incompatible query types");
+
+							response.setContentType("text/html;charset=utf-8");
+							baseRequest.setHandled(true);
+							response.setStatus(HttpServletResponse.SC_OK);
+							response.getWriter().println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+							response.getWriter().println("<h3 style=\"color: red;\">Incompatible query types!</h3>");
+							return;
+							//throw new QueryException("Incompatible query types");
 						}
 					}
 				}
