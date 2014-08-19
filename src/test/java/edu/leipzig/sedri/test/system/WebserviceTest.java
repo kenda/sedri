@@ -14,6 +14,8 @@ import edu.leipzig.sedri.Server;
 import edu.leipzig.sedri.Webservice;
 import edu.leipzig.sedri.test.integration.ServerTest;
 
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.hp.hpl.jena.rdf.model.*;
 
 /**
@@ -24,8 +26,9 @@ public class WebserviceTest
 {
 	private JAXBContext 					 jc;
 	private	 Unmarshaller 					 unmarshaller;
-	private Server 							 server1;
-	private org.eclipse.jetty.server.Server webserver;
+	private Server 							 server1, server2;
+	private org.eclipse.jetty.server.Server webserver1, webserver2;
+	private WebClient						 webClient;
 	
     /**
      * Create the test case
@@ -47,14 +50,25 @@ public class WebserviceTest
     	unmarshaller = jc.createUnmarshaller();
     	final URL configFile1 = ServerTest.class.getResource("../testConfig1.xml");
     	server1 = (Server) unmarshaller.unmarshal(new File(configFile1.toURI()));
+    	final URL configFile5 = ServerTest.class.getResource("../testConfig5.xml");
+    	server2 = (Server) unmarshaller.unmarshal(new File(configFile5.toURI()));
 
-    	// start webserver
-    	BigInteger port = server1.getPort();
-    	webserver = new org.eclipse.jetty.server.Server(port.intValue());
-    	webserver.setHandler(new Webservice(server1));
+    	// start webserver1
+    	BigInteger port1 = server1.getPort();
+    	webserver1 = new org.eclipse.jetty.server.Server(port1.intValue());
+    	webserver1.setHandler(new Webservice(server1));
+    	webserver1.start();
     	
-    	webserver.start();
-    	//webserver.join();
+    	// start webserver2
+    	BigInteger port2 = server2.getPort();
+    	webserver2 = new org.eclipse.jetty.server.Server(port2.intValue());
+    	webserver2.setHandler(new Webservice(server2));
+    	webserver2.start();
+    	
+    	//webserver1.join();
+    	//webserver2.join();
+    	
+    	webClient = new WebClient();
     }
     
     /**
@@ -104,6 +118,15 @@ public class WebserviceTest
     }
     
     /**
+     * Test Webservice for wrong PreProcessor
+     */
+    public void testWebServiceWrongPreProcessor() throws Exception
+    {
+    	HtmlPage currentPage = webClient.getPage("http://localhost:9876/test1?class=Drug");
+    	assertEquals("Preprocessor shouldn't be found!", "Failed loading Preprocessor!", currentPage.asText());
+    }
+    
+    /**
      * Test Webservice for correct PostProcessor
      */
     public void testWebServiceCorrectPostProcessor() throws Exception
@@ -116,9 +139,38 @@ public class WebserviceTest
     	assertTrue("Required Statement not found!", model.contains(resource, property, "TestObject1"));
     }
     
+    /**
+     * Test Webservice for wrong PostProcessor
+     */
+    public void testWebServiceWrongPostProcessor() throws Exception
+    {
+    	HtmlPage currentPage = webClient.getPage("http://localhost:9876/test2?class=Drug");
+    	assertEquals("Postprocessor shouldn't be found!", "Failed loading Postprocessor!", currentPage.asText());
+    }
+    
+    /**
+     * Test Webservice for wrong Param
+     */
+    public void testWebServiceWrongParam() throws Exception
+    {
+    	HtmlPage currentPage = webClient.getPage("http://localhost:9876/test3?wrongclass=Drug");
+    	assertEquals("Parameter shouldn't be found!", "Parameter is missing!", currentPage.asText());
+    }
+    
+    /**
+     * Test Webservice for incompatible query types
+     */
+    public void testWebServiceIncompatibleQueryTypes() throws Exception
+    {
+    	HtmlPage currentPage = webClient.getPage("http://localhost:9876/test4?class=Drug");
+    	assertEquals("Queries should be incompatible!", "Incompatible query types!", currentPage.asText());
+    }
+    
+    //TODO: Write more tests, for example test the concatenation of two sources 
     
     protected void tearDown() throws Exception {
-    	webserver.stop();
+    	webserver1.stop();
+    	webserver2.stop();
     }
     
 }
