@@ -68,8 +68,28 @@ public class Webservice extends AbstractHandler {
 									o, paramTable);
 						} catch (ClassNotFoundException cnfe) {
 							System.out.println("Failed loading Preprocessor!");
-						}catch (Exception e)
-			    			{System.out.println(e);}
+							
+							response.setContentType("text/html;charset=utf-8");
+							baseRequest.setHandled(true);
+							response.setStatus(HttpServletResponse.SC_OK);
+							response.getWriter().println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+							response.getWriter().println("<h3 style=\"color: red;\">Failed loading Preprocessor!</h3>");
+							return;
+						} catch (Exception e) {
+							System.out.println(e);
+						}
+					}
+				}
+				// check for correct params
+				if (false == paramTable.keySet().containsAll(endpoint.getParams().getParam())) {
+					System.out.println("Param is missing");
+					
+					response.setContentType("text/html;charset=utf-8");
+					baseRequest.setHandled(true);
+					response.setStatus(HttpServletResponse.SC_OK);
+					response.getWriter().println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+					response.getWriter().println("<h3 style=\"color: red;\">Param is missing!</h3>");
+					return;
 				}
 
 				Sources sources = (Sources) endpoint.getSources();
@@ -121,6 +141,15 @@ public class Webservice extends AbstractHandler {
 							model = (Model) m.invoke(o, model);
 						} catch (ClassNotFoundException cnfe) {
 							System.out.println("Failed loading Postprocessor!");
+							
+							response.setContentType("text/html;charset=utf-8");
+							baseRequest.setHandled(true);
+							response.setStatus(HttpServletResponse.SC_OK);
+							response.getWriter().println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+							response.getWriter().println("<h3 style=\"color: red;\">Failed loading Postprocessor!</h3>");
+							return;
+						} catch (Exception e) {
+							System.out.println(e);
 						}
 					}
 				}
