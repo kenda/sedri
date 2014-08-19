@@ -1,40 +1,27 @@
 <server port="5678">
-  <endpoint>
-    <url>/test1</url>
-    <preprocessors>
-      <preprocessor>edu.leipzig.sedri.test.TestPreprocessor</preprocessor>
-    </preprocessors>
-    <sources>
-      <source>
-	<url>http://dbpedia.org/sparql</url>
-	<query>select ?s where {?s a &lt;http://dbpedia.org/ontology/Drug&gt;} limit $testLimit</query>
-      </source>
-      <source>
-	<url>http://drugbank.bio2rdf.org/sparql</url>
-	<query>select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} limit $testLimit</query>
-      </source>
-    </sources>
-    <format>JSON-LD</format>
-  </endpoint>
-  <endpoint>
-    <url>/test2/test3</url>
-    <params>
-      <param>testLimit</param>
-      <param>testLimit</param>
-    </params>
-    <postprocessors>
-      <postprocessor>edu.leipzig.sedri.test.TestPostprocessor</postprocessor>
-    </postprocessors>
-    <sources>
-      <source>
-	<url>http://dbpedia.org/sparql</url>
-	<query>select ?s where {?s a &lt;http://dbpedia.org/ontology/Drug&gt;} limit $testLimit</query>
-      </source>
-      <source>
-	<url>http://drugbank.bio2rdf.org/sparql</url>
-	<query>select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} limit $testLimit</query>
-      </source>
-    </sources>
-    <format>JSON-LD</format>
-  </endpoint>
+	<endpoint>
+		<url>/test1</url>
+		<preprocessors>
+			<preprocessor>edu.leipzig.sedri.test.TestPreprocessor</preprocessor>
+		</preprocessors>
+		<sources>
+			<source>
+				<url>http://drugbank.bio2rdf.org/sparql</url>
+			</source>
+		</sources>
+		<format>JSON-LD</format>
+	</endpoint>
+	<endpoint>
+		<url>/test2/test3</url>
+		<params>
+			<param>testLimit</param>
+			<param>testLimit</param>
+		</params>
+		<postprocessors>
+			<postprocessor>edu.leipzig.sedri.test.TestPostprocessor</postprocessor>
+		</postprocessors>
+		<sources>
+		</sources>
+		<format></format>
+	</endpoint>
 </server>

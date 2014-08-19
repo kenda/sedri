@@ -152,7 +152,7 @@ public class ServerTest
      */
     public void testCorrectParams()
     {
-    	assertEquals ("Wrong params!", "testLimit", endpoints.get(0).getParams().getParam().get(0).toString());
+    	assertEquals ("Wrong params!", "class", endpoints.get(0).getParams().getParam().get(0).toString());
     	assertEquals ("Wrong params!", "testLimit", endpoints.get(2).getParams().getParam().get(0).toString());
     	assertEquals ("Wrong params!", "testLimit", endpoints.get(2).getParams().getParam().get(1).toString());
     	assertEquals ("Wrong params!", "", endpoints.get(3).getParams().getParam().get(0).toString());
@@ -209,5 +209,56 @@ public class ServerTest
     	assertEquals ("Wrong postprocessor!", "edu.leipzig.sedri.test.TestPostprocessor", endpoints.get(2).getPostprocessors().getPostprocessor().get(0).toString());
     	assertEquals ("Wrong postprocessor!", "edu.leipzig.sedri.test.TestPostprocessor", endpoints.get(4).getPostprocessors().getPostprocessor().get(0).toString());
     	assertEquals ("Wrong postprocessor!", "edu.leipzig.sedri.test.WrongTestPostprocessor", endpoints.get(4).getPostprocessors().getPostprocessor().get(1).toString());
+    }
+    
+    /**
+     * Sources tests
+     */
+    
+    /**
+     * Test correct Sources count
+     */
+    public void testCorrectSourcesCount()
+    {
+    	assertEquals ("Wrong sources count!", 2, endpoints.get(0).getSources().getSource().size());
+    	assertEquals ("Wrong sources count!", 1, endpoints.get(1).getSources().getSource().size());
+    	assertEquals ("Wrong sources count!", 0, endpoints.get(2).getSources().getSource().size());
+    	assertEquals ("Wrong sources count!", null, endpoints.get(3).getSources());
+    	assertEquals ("Wrong sources count!", 2, endpoints.get(4).getSources().getSource().size());
+    }
+    
+    /**
+     * Test correct Sources urls
+     */
+    public void testCorrectSourcesUrls()
+    {
+    	assertEquals ("Wrong sources url!", "http://dbpedia.org/sparql", endpoints.get(0).getSources().getSource().get(0).getUrl());
+    	assertEquals ("Wrong sources url!", "http://drugbank.bio2rdf.org/sparql", endpoints.get(0).getSources().getSource().get(1).getUrl());
+    	assertEquals ("Wrong sources url!", "http://drugbank.bio2rdf.org/sparql", endpoints.get(1).getSources().getSource().get(0).getUrl());
+    	assertEquals ("Wrong sources url!", null, endpoints.get(4).getSources().getSource().get(0).getUrl());
+    	assertEquals ("Wrong sources url!", null, endpoints.get(4).getSources().getSource().get(1).getUrl());
+    }
+    
+    /**
+     * Test correct Sources queries
+     */
+    public void testCorrectSourcesQueries()
+    {
+    	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://dbpedia.org/ontology/$class>} order by ?s limit 1", endpoints.get(0).getSources().getSource().get(0).getQuery());
+    	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1", endpoints.get(0).getSources().getSource().get(1).getQuery());
+    	assertEquals ("Wrong sources query!", null, endpoints.get(1).getSources().getSource().get(0).getQuery());
+    	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} limit $testLimit", endpoints.get(4).getSources().getSource().get(1).getQuery());
+    }
+    
+    /**
+     * Test correct Format
+     */
+    public void testCorrectFormat()
+    {
+    	assertEquals ("Wrong format!", "RDF/XML", endpoints.get(0).getFormat());
+    	assertEquals ("Wrong format!", "JSON-LD", endpoints.get(1).getFormat());
+    	assertEquals ("Wrong format!", "", endpoints.get(2).getFormat());
+    	assertEquals ("Wrong format!", "N-TRIPLE", endpoints.get(3).getFormat());
+    	assertEquals ("Wrong format!", null, endpoints.get(4).getFormat());
     }
 }
