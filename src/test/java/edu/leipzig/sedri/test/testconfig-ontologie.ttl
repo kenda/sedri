@@ -1,0 +1,102 @@
+@prefix : <http://www.sedri.de/testconfig/#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.sedri.de/testconfig/> .
+
+<http://www.sedri.de/testconfig/> rdf:type owl:Ontology ;
+                                  
+                                  rdfs:label "Testkonfigurations-Ontology"@de ,
+                                             "Testconfigure ontology"@en ;
+                                  
+                                  <http://purl.org/dc/terms/contributor> "Marcus Nitzschke" ;
+                                  
+                                  owl:versionInfo "0.1.0.0001" ;
+                                  
+                                  rdfs:comment "Eine Testkonfigurations-Ontology um das SEDRI Framework zu testen."@de ,
+                                               "A testconfiguration ontology to test the SEDRI framework."@en ;
+                                  
+                                  <http://purl.org/dc/terms/contributor> "Lars Eidam" ;
+                                  
+                                  owl:imports <http://www.sedri.de/> ;
+                                  
+                                  owl:versionIRI <http://www.sedri.de/testconfig/0.1.0.0001> .
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://www.sedri.de/testconfig/SPARQLNode1
+
+<http://www.sedri.de/testconfig/SPARQLNode1> rdf:type <http://www.sedri.de/SPARQLNode> ,
+                                                      owl:NamedIndividual ;
+                                             
+                                             rdfs:label "SPARQL Node 1" ;
+                                             
+                                             <http://www.sedri.de/url-path> "/test"^^xsd:string ;
+                                             
+                                             <http://www.sedri.de/resultFormat> "RDF/XML"^^xsd:string ;
+                                             
+                                             <http://www.sedri.de/param> "class"^^xsd:string ;
+                                             
+                                             <http://www.sedri.de/postprocessor> "edu.leipzig.sedri.test.TestPostprocessor"^^xsd:string ;
+                                             
+                                             <http://www.sedri.de/preprocessor> "edu.leipzig.sedri.test.TestPreprocessor"^^xsd:string ;
+                                             
+                                             <http://www.sedri.de/sources> <http://www.sedri.de/testconfig/source1> ,
+                                                                           <http://www.sedri.de/testconfig/source2> .
+
+
+
+###  http://www.sedri.de/testconfig/Webservice1
+
+<http://www.sedri.de/testconfig/Webservice1> rdf:type <http://www.sedri.de/webservice> ,
+                                                      owl:NamedIndividual ;
+                                             
+                                             rdfs:label "Webservice1" ;
+                                             
+                                             <http://www.sedri.de/portNumber> 1234 ;
+                                             
+                                             <http://www.sedri.de/hasSparqlNode> <http://www.sedri.de/testconfig/SPARQLNode1> .
+
+
+
+###  http://www.sedri.de/testconfig/source1
+
+<http://www.sedri.de/testconfig/source1> rdf:type <http://www.sedri.de/SourceEndpoint> ,
+                                                  owl:NamedIndividual ;
+                                         
+                                         rdfs:label "Source 1" ;
+                                         
+                                         <http://www.sedri.de/sourceIndex> 1 ;
+                                         
+                                         <http://www.sedri.de/sparqlEndpointURL> "http://dbpedia.org/sparql"^^xsd:string ;
+                                         
+                                         <http://www.sedri.de/sparqlQuery> "select ?s where {?s a &lt;http://dbpedia.org/ontology/$class&gt;} order by ?s limit 1"^^xsd:string .
+
+
+
+###  http://www.sedri.de/testconfig/source2
+
+<http://www.sedri.de/testconfig/source2> rdf:type <http://www.sedri.de/SourceEndpoint> ,
+                                                  owl:NamedIndividual ;
+                                         
+                                         rdfs:label "Source 2" ;
+                                         
+                                         <http://www.sedri.de/sourceIndex> 2 ;
+                                         
+                                         <http://www.sedri.de/sparqlEndpointURL> "http://drugbank.bio2rdf.org/sparql"^^xsd:string ;
+                                         
+                                         <http://www.sedri.de/sparqlQuery> "select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} order by ?s limit 1"^^xsd:string .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+
