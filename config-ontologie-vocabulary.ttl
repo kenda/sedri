@@ -1,0 +1,292 @@
+@prefix : <http://www.sedri.de/config/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix ccns: <http://creativecommons.org/ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@base <http://www.sedri.de/> .
+
+<http://www.sedri.de/> rdf:type owl:Ontology ;
+                       
+                       rdfs:label "Sedri Konfigurations-Ontologie Vokabular"@de ,
+                                  "Sedri configuration ontologie vocabulary"@en ;
+                       
+                       owl:versionInfo "0.1.0.0001" ;
+                       
+                       rdfs:comment "Das ist das Konfigurations-Ontology Vokabular für das Sedri SPARQL Endpoints zu Webservice Framework."@de ;
+                       
+                       ccns:license "http://creativecommons.org/licenses/by/3.0/" ;
+                       
+                       dct:contributor "Marcus Nitzschke" ,
+                                       "Lars Eidam" ;
+                       
+                       rdfs:comment "This is the configure ontologie vocabulary for the Sedri SPARQL Endpoint to webservice tool."@en ;
+                       
+                       owl:versionIRI <http://www.sedri.de/0.1.0.0001> .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+###  http://creativecommons.org/ns#license
+
+ccns:license rdf:type owl:AnnotationProperty .
+
+
+
+###  http://purl.org/dc/terms/contributor
+
+dct:contributor rdf:type owl:AnnotationProperty .
+
+
+
+###  http://www.w3.org/2002/07/owl#versionInfo
+
+owl:versionInfo rdf:type owl:AnnotationProperty .
+
+
+
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://www.sedri.de/hasSparqlNode
+
+<http://www.sedri.de/hasSparqlNode> rdf:type owl:ObjectProperty ;
+                                    
+                                    rdfs:label "hat SPARQL Node"@de ,
+                                               "has SPARQL node"@en ;
+                                    
+                                    rdfs:comment "Ordnet beliebig viele SPARQL Nodes einem Webservice zu."@de ,
+                                                 "Set any number of SPARQL nodes to a webservice."@en ;
+                                    
+                                    rdfs:range <http://www.sedri.de/SPARQLNode> ;
+                                    
+                                    rdfs:domain <http://www.sedri.de/webservice> .
+
+
+
+###  http://www.sedri.de/sources
+
+<http://www.sedri.de/sources> rdf:type owl:ObjectProperty ;
+                              
+                              rdfs:label "hat Quellenzugriffspunkt"@de ,
+                                         "has source endpoint"@en ;
+                              
+                              rdfs:comment "Mehrere Quellenzugriffspunkte (SPARQL Endpoints) mit vorkonfigurierten Queries."@de ,
+                                           "Multiple sources endpoints (SPARQL Endpoints) with preconfigured queries."@en ;
+                              
+                              rdfs:domain <http://www.sedri.de/SPARQLNode> ;
+                              
+                              rdfs:range <http://www.sedri.de/SourceEndpoint> .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://www.sedri.de/param
+
+<http://www.sedri.de/param> rdf:type owl:DatatypeProperty ;
+                            
+                            rdfs:label "URL-GET Parameter"@de ,
+                                       "URL-GET parameter"@en ;
+                            
+                            rdfs:comment "URL-GET Parameter für die dynamische Query Erzeugung."@de ,
+                                         "URL-GET parameter to generate dynamic queries."@en .
+
+
+
+###  http://www.sedri.de/portNumber
+
+<http://www.sedri.de/portNumber> rdf:type owl:DatatypeProperty ;
+                                 
+                                 rdfs:label "Portnummer"@de ,
+                                            "Portnumber"@en ;
+                                 
+                                 rdfs:comment "Portnummer eines Webservice."@de ,
+                                              "Portnumber of a webservice."@en ;
+                                 
+                                 rdfs:domain <http://www.sedri.de/webservice> ;
+                                 
+                                 rdfs:range xsd:integer .
+
+
+
+###  http://www.sedri.de/postprocessor
+
+<http://www.sedri.de/postprocessor> rdf:type owl:DatatypeProperty ;
+                                    
+                                    rdfs:label "Post-Processor Klassenname"@de ,
+                                               "Post-Processor classname"@en ;
+                                    
+                                    rdfs:comment "Mehrere Post-Processor Klassennamen um das RDF-Model vor der Ergebnisausgabe zu verändern."@de ,
+                                                 "Multiple Post-Processor classnames to manipulate the RDF-model befor the result output."@en ;
+                                    
+                                    rdfs:domain <http://www.sedri.de/SPARQLNode> ;
+                                    
+                                    rdfs:range xsd:string .
+
+
+
+###  http://www.sedri.de/preprocessor
+
+<http://www.sedri.de/preprocessor> rdf:type owl:DatatypeProperty ;
+                                   
+                                   rdfs:label "Pre-Processor Klassenname"@de ,
+                                              "Pre-Processor classnames"@en ;
+                                   
+                                   rdfs:comment "Mehrere Pre-Processor Klassennamen um die URL-GET Paramtereliste zu for der Query-Erzeugung zu verändern."@de ,
+                                                "Multiple Pre-Processor classnames to manipulate the URL-GET parameter list."@en ;
+                                   
+                                   rdfs:domain <http://www.sedri.de/SPARQLNode> ;
+                                   
+                                   rdfs:range xsd:string .
+
+
+
+###  http://www.sedri.de/resultFormat
+
+<http://www.sedri.de/resultFormat> rdf:type owl:DatatypeProperty ;
+                                   
+                                   rdfs:label "Ergebnisformat"@de ,
+                                              "result format"@en ;
+                                   
+                                   rdfs:comment "Legt das Ergbnisformat eines SPARQL-Kontens fest. Mögliche Formate sind TURTLE, N-TRIPLE, RDF/XML and JSON-LD."@de ,
+                                                "Set the result fomrat of a SPARQL node. Possible formats are TURTLE, N-TRIPLE, RDF/XML and JSON-LD."@en ;
+                                   
+                                   rdfs:domain <http://www.sedri.de/SPARQLNode> ;
+                                   
+                                   rdfs:range xsd:string .
+
+
+
+###  http://www.sedri.de/sourceIndex
+
+<http://www.sedri.de/sourceIndex> rdf:type owl:DatatypeProperty ;
+                                  
+                                  rdfs:label "Quellenindex"@de ,
+                                             "Sourceindex"@en ;
+                                  
+                                  rdfs:comment "Quellenindex um eine Reihenfolge der Quellzugriffspunkte zu konfigurieren."@de ,
+                                               "Index of the source endpoint to configure a order."@en ;
+                                  
+                                  rdfs:domain <http://www.sedri.de/SourceEndpoint> ;
+                                  
+                                  rdfs:range xsd:integer .
+
+
+
+###  http://www.sedri.de/sparqlEndpointURL
+
+<http://www.sedri.de/sparqlEndpointURL> rdf:type owl:DatatypeProperty ;
+                                        
+                                        rdfs:label "URL eines SPARQL Endpoint"@de ,
+                                                   "URL of a SPARQL endpoint"@en ;
+                                        
+                                        rdfs:comment "Repräsentiert die URL eines SPARQL Endpoint."@de ,
+                                                     "Represent the URL of a SPARQL endpoint."@en ;
+                                        
+                                        rdfs:domain <http://www.sedri.de/SourceEndpoint> ;
+                                        
+                                        rdfs:range xsd:string .
+
+
+
+###  http://www.sedri.de/sparqlQuery
+
+<http://www.sedri.de/sparqlQuery> rdf:type owl:DatatypeProperty ;
+                                  
+                                  rdfs:label "Vorkonfiguriertes SPARQL Query"@de ,
+                                             "preconfigured SPARQL query"@en ;
+                                  
+                                  rdfs:comment "Repräsentiert ein SPARQL Query mit den definierten URL-GET Parametern."@de ,
+                                               "Represent a SPARQL query with the preconfigured URL-GET paramter."@en ;
+                                  
+                                  rdfs:domain <http://www.sedri.de/SourceEndpoint> ;
+                                  
+                                  rdfs:range xsd:string .
+
+
+
+###  http://www.sedri.de/url-path
+
+<http://www.sedri.de/url-path> rdf:type owl:DatatypeProperty ;
+                               
+                               rdfs:label "URL-Pfad"@de ,
+                                          "URL-path"@en ;
+                               
+                               rdfs:comment "URL-Pfad eines SPARQL Knotens."@de ,
+                                            "URL-path of a SPARQL-Node."@en ;
+                               
+                               rdfs:domain <http://www.sedri.de/SPARQLNode> ;
+                               
+                               rdfs:range xsd:string .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://www.sedri.de/SPARQLNode
+
+<http://www.sedri.de/SPARQLNode> rdf:type owl:Class ;
+                                 
+                                 rdfs:label "SPARQL Knoten"@de ,
+                                            "SPARQL Node"@en ;
+                                 
+                                 rdfs:comment "Repräsentiert einen SPARQL Knoten, welcher einen URL-Pfad mit Parameteren besitzt und verschiedene Source Endpoints (SPARQL Endpoints) abfragt."@de ,
+                                              "SPARQL Node that represent a webservice URL-path witrh parameters and several souce endpoints (SPARQL Enpoints)."@en .
+
+
+
+###  http://www.sedri.de/SourceEndpoint
+
+<http://www.sedri.de/SourceEndpoint> rdf:type owl:Class ;
+                                     
+                                     rdfs:label "Quellzugriffspunkt"@de ,
+                                                "source endpoint"@en ;
+                                     
+                                     rdfs:comment "Ein Quellzugriffspunkt, welcher ein SPARQL Endpoint mit vorkonfigurierten Query darstellt."@de ,
+                                                  "A source endpoint which represent a SPARQL endpoint with a preconfigured query."@en .
+
+
+
+###  http://www.sedri.de/webservice
+
+<http://www.sedri.de/webservice> rdf:type owl:Class ;
+                                 
+                                 rdfs:label "Webservice"@de ,
+                                            "Webservice"@en ;
+                                 
+                                 rdfs:comment "Repräsentiert einen Webservice unter einer bestimmten Portnummer und mit einer beliebigen Anzahl von SPARQL Nodes."@de ,
+                                              "Represent a webservice with portnumber and several SPARQL nodes."@en .
+
+
+
+
+###  Generated by the OWL API (version 3.4.2) http://owlapi.sourceforge.net
+
