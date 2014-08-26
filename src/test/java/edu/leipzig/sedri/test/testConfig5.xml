@@ -70,11 +70,29 @@
 		<sources>
 			<source>
 				<url>http://dbpedia.org/sparql</url>
-				<query>ASK {?s a &lt;http://dbpedia.org/ontology/$class&gt;}</query>
+				<query>DESCRIBE &lt;http://dbpedia.org/ontology/$class&gt;</query>
 			</source>
 			<source>
 				<url>http://drugbank.bio2rdf.org/sparql</url>
 				<query>select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} order by ?s limit 1</query>
+			</source>
+		</sources>
+		<format>RDF/XML</format>
+	</endpoint>
+	<endpoint>
+		<url>/test5</url>
+		<params>
+			<param>class1</param>
+			<param>class2</param>
+		</params>
+		<sources>
+			<source>
+				<url>http://dbpedia.org/sparql</url>
+				<query>DESCRIBE &lt;http://dbpedia.org/ontology/$class1&gt;</query>
+			</source>
+			<source>
+				<url>http://drugbank.bio2rdf.org/sparql</url>
+				<query>DESCRIBE &lt;http://bio2rdf.org/drugbank_vocabulary:$class2&gt;</query>
 			</source>
 		</sources>
 		<format>RDF/XML</format>

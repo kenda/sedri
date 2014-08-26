@@ -166,7 +166,52 @@ public class WebserviceTest
     	assertEquals("Queries should be incompatible!", "Incompatible query types!", currentPage.asText());
     }
     
-    //TODO: Write more tests, for example test the concatenation of two sources 
+    /**
+     * Test Webservice with two correct DESCRIBE queries
+     */
+    public void testWebServiceTwoCorrectDescribeQueries() throws Exception
+    {
+    	Model model = ModelFactory.createDefaultModel();
+    	model.getReader().read(model, "http://localhost:9876/test5?class1=Drug&class2=Drug");
+    	    	
+    	Resource resource1 = ResourceFactory.createResource("http://dbpedia.org/ontology/Drug");
+    	assertTrue("Required Resource not found!", model.containsResource(resource1));
+    	
+    	Resource resource2 = ResourceFactory.createResource("http://bio2rdf.org/drugbank_vocabulary:Drug");
+    	assertTrue("Required Resource not found!", model.containsResource(resource2));
+    }
+    
+    /**
+     * Test Webservice with one correct and one wrong DESCRIBE query
+     */
+    public void testWebServiceCorractAndWrongDescribeQuery() throws Exception
+    {
+    	Model model = ModelFactory.createDefaultModel();
+    	model.getReader().read(model, "http://localhost:9876/test5?class1=Drug&class2=D1r2u3g");
+    	    	
+    	Resource resource1 = ResourceFactory.createResource("http://dbpedia.org/ontology/Drug");
+    	assertTrue("Required Resource not found!", model.containsResource(resource1));
+    	
+    	Resource resource2 = ResourceFactory.createResource("http://bio2rdf.org/drugbank_vocabulary:Drug");
+    	assertTrue("Resource should not be found!", !model.containsResource(resource2));
+    }
+    
+    /**
+     * Test Webservice with two wrong DESCRIBE queries
+     */
+    public void testWebServiceTwoWrongDescribeQueries() throws Exception
+    {
+    	Model model = ModelFactory.createDefaultModel();
+    	model.getReader().read(model, "http://localhost:9876/test5?class1=D1r2u3g&class2=D1r2u3g");
+    	    	
+    	Resource resource1 = ResourceFactory.createResource("http://dbpedia.org/ontology/Drug");
+    	assertTrue("Resource should not be found!", !model.containsResource(resource1));
+    	
+    	Resource resource2 = ResourceFactory.createResource("http://bio2rdf.org/drugbank_vocabulary:Drug");
+    	assertTrue("Resource should not be found!", !model.containsResource(resource2));
+    	
+    	assertEquals("Return Model has wrong size!", 0, model.size());
+    }
     
     protected void tearDown() throws Exception {
     	webserver1.stop();
