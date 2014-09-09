@@ -14,6 +14,7 @@ public class UnitTests
     public static Test suite()
     {
     	TestSuite suite = new TestSuite();
+    	suite.addTestSuite(ConfigLoaderTest.class);
     	suite.addTestSuite(QueryProcessorTest.class);
         return suite;
     }
