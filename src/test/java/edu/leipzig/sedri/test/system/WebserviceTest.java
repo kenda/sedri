@@ -71,6 +71,11 @@ public class WebserviceTest
     	webClient = new WebClient();
     }
     
+    protected void tearDown() throws Exception {
+    	webserver1.stop();
+    	webserver2.stop();
+    }
+    
     /**
      * Test Webservice for correct model size
      */
@@ -211,11 +216,6 @@ public class WebserviceTest
     	assertTrue("Resource should not be found!", !model.containsResource(resource2));
     	
     	assertEquals("Return Model has wrong size!", 0, model.size());
-    }
-    
-    protected void tearDown() throws Exception {
-    	webserver1.stop();
-    	webserver2.stop();
     }
     
 }
