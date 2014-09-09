@@ -13,7 +13,7 @@
 		<sources>
 			<source>
 				<url>http://dbpedia.org/sparql</url>
-				<query>select ?s where {?s a &lt;http://dbpedia.org/ontology/$class&gt;} order by ?s limit 1</query>
+				<query>select ?s where {?s a &lt;http://dbpedia.org/ontology/$class&gt;. FILTER regex(?s, "Methylfentanyl")} order by ?s limit 1</query>
 			</source>
 			<source>
 				<url>http://drugbank.bio2rdf.org/sparql</url>

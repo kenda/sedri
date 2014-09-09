@@ -244,7 +244,7 @@ public class ServerTest
      */
     public void testCorrectSourcesQueries()
     {
-    	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://dbpedia.org/ontology/$class>} order by ?s limit 1", endpoints.get(0).getSources().getSource().get(0).getQuery());
+    	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://dbpedia.org/ontology/$class>. FILTER regex(?s, \"Methylfentanyl\")} order by ?s limit 1", endpoints.get(0).getSources().getSource().get(0).getQuery());
     	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1", endpoints.get(0).getSources().getSource().get(1).getQuery());
     	assertEquals ("Wrong sources query!", null, endpoints.get(1).getSources().getSource().get(0).getQuery());
     	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} limit $testLimit", endpoints.get(4).getSources().getSource().get(1).getQuery());
