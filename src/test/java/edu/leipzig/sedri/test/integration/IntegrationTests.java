@@ -14,7 +14,7 @@ public class IntegrationTests
     public static Test suite()
     {
     	TestSuite suite = new TestSuite();
-    	suite.addTestSuite(ServerTest.class);
+    	suite.addTestSuite(ServerXMLTest.class);
         return suite;
     }
 }

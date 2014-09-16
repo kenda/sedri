@@ -4,12 +4,12 @@ import junit.framework.TestCase;
 
 import java.io.File;
 import java.math.BigInteger;
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.lang.String;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-
+import edu.leipzig.sedri.ConfigLoader;
 import edu.leipzig.sedri.Server;
 import edu.leipzig.sedri.Webservice;
 import edu.leipzig.sedri.test.integration.ServerTest;
@@ -21,14 +21,15 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
  * Unit test for simple App.
  */
-public class WebserviceTest 
+public abstract class WebserviceTest 
     extends TestCase
 {
-	private JAXBContext 					 jc;
-	private	 Unmarshaller 					 unmarshaller;
-	private Server 							 server1, server2;
-	private org.eclipse.jetty.server.Server webserver1, webserver2;
-	private WebClient						 webClient;
+	protected String								fileType;
+	protected List<String>							configFiles;
+	
+	private List<Server>							servers;
+	private List<org.eclipse.jetty.server.Server>	webservers;
+	private WebClient						 		webClient;
 	
     /**
      * Create the test case
@@ -38,6 +39,9 @@ public class WebserviceTest
     public WebserviceTest( String testName )
     {
         super( testName );
+    	configFiles = new ArrayList<String>();
+    	servers = new ArrayList<Server>();
+    	webservers = new ArrayList<org.eclipse.jetty.server.Server>();
     }
 
     protected void setUp() throws Exception {
@@ -45,35 +49,44 @@ public class WebserviceTest
     	/*
     	 * Setup Webserver
     	 */
-    	// read the configuration file 
-    	jc = JAXBContext.newInstance("edu.leipzig.sedri");
-    	unmarshaller = jc.createUnmarshaller();
-    	final URL configFile1 = ServerTest.class.getResource("../testConfig1.xml");
-    	server1 = (Server) unmarshaller.unmarshal(new File(configFile1.toURI()));
-    	final URL configFile5 = ServerTest.class.getResource("../testConfig5.xml");
-    	server2 = (Server) unmarshaller.unmarshal(new File(configFile5.toURI()));
-
-    	// start webserver1
-    	BigInteger port1 = server1.getPort();
-    	webserver1 = new org.eclipse.jetty.server.Server(port1.intValue());
-    	webserver1.setHandler(new Webservice(server1));
-    	webserver1.start();
+    	// read the configuration file
+    	Iterator<String> configFilesIt = configFiles.iterator();
     	
-    	// start webserver2
-    	BigInteger port2 = server2.getPort();
-    	webserver2 = new org.eclipse.jetty.server.Server(port2.intValue());
-    	webserver2.setHandler(new Webservice(server2));
-    	webserver2.start();
+    	while (configFilesIt.hasNext()) {
+    		File configFile = new File(ServerTest.class.getResource(configFilesIt.next()).toURI());
+    		ConfigLoader configLoader = new ConfigLoader(configFile, fileType);
+    		ArrayList<Server> serversFromConfig = configLoader.load();
+    		if (0 == serversFromConfig.size()) {
+        		System.err.println("No webservice configuration could be loaded!");
+        		return;
+    		}
+    		servers.addAll(serversFromConfig);
+    	}
     	
-    	//webserver1.join();
-    	//webserver2.join();
+    	Iterator<Server> serversIt = servers.iterator();
+    	
+    	while (serversIt.hasNext()) {
+        	// start webserver1
+    		Server server = serversIt.next();
+        	BigInteger port = server.getPort();
+        	org.eclipse.jetty.server.Server webserver = new org.eclipse.jetty.server.Server(port.intValue());
+        	webserver.setHandler(new Webservice(server));
+        	webserver.start();
+        	webservers.add(webserver);
+    	}
+    	
+    	//webservers.get(0).join();
+    	//webservers.get(1).join();
     	
     	webClient = new WebClient();
     }
     
     protected void tearDown() throws Exception {
-    	webserver1.stop();
-    	webserver2.stop();
+    	Iterator<org.eclipse.jetty.server.Server> webserversIt = webservers.iterator();
+    	
+    	while (webserversIt.hasNext()) {
+    		webserversIt.next().stop();
+    	}
     }
     
     /**

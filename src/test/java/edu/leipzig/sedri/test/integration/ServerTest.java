@@ -3,11 +3,9 @@ package edu.leipzig.sedri.test.integration;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.io.File;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
 
 import edu.leipzig.sedri.*;
 
@@ -16,15 +14,15 @@ import java.net.URL;
 /**
  * Unit test for simple App.
  */
-public class ServerTest 
+public abstract class ServerTest 
     extends TestCase
 {
-	private JAXBContext 	jc;
-	private	 Unmarshaller 	unmarshaller;
-	private Server 			server1;
-	private Server 			server2;
-	private Server 			server3;
-	private List<Endpoint> endpoints;
+	protected String			fileType;
+	protected List<String>		configFiles;
+	protected String			wrongConfigFile;
+	
+	private List<Server>		servers;
+	private List<Endpoint> 		endpoints;
 	
     /**
      * Create the test case
@@ -34,23 +32,31 @@ public class ServerTest
     public ServerTest( String testName )
     {
         super( testName );
+    	configFiles = new ArrayList<String>();
+    	servers = new ArrayList<Server>();
+    	endpoints = new ArrayList<Endpoint>();
     }
 
     protected void setUp() throws Exception
     {
-    	// read the configuration file
-    	jc = JAXBContext.newInstance("edu.leipzig.sedri");
-    	unmarshaller = jc.createUnmarshaller();
-    	final URL configFile1 = ServerTest.class.getResource("../testConfig1.xml");
-    	final URL configFile2 = ServerTest.class.getResource("../testConfig2.xml");
-    	final URL configFile3 = ServerTest.class.getResource("../testConfig3.xml");
-    	server1 = (Server) unmarshaller.unmarshal(new File(configFile1.toURI()));
-    	server2 = (Server) unmarshaller.unmarshal(new File(configFile2.toURI()));
-    	server3 = (Server) unmarshaller.unmarshal(new File(configFile3.toURI()));
-    	endpoints = new ArrayList<Endpoint>();
-    	endpoints.addAll(server1.getEndpoint());
-    	endpoints.addAll(server2.getEndpoint());
-    	endpoints.addAll(server3.getEndpoint());
+    	Iterator<String> configFilesIt = configFiles.iterator();
+    	
+    	while (configFilesIt.hasNext()) {
+    		File configFile = new File(ServerTest.class.getResource(configFilesIt.next()).toURI());
+    		ConfigLoader configLoader = new ConfigLoader(configFile, fileType);
+    		ArrayList<Server> serversFromConfig = configLoader.load();
+    		if (0 == serversFromConfig.size()) {
+        		System.err.println("No webservice configuration could be loaded!");
+        		return;
+    		}
+    		servers.addAll(serversFromConfig);
+    	}
+
+    	Iterator<Server> serversIt = servers.iterator();
+    	
+    	while (serversIt.hasNext()) {
+    		endpoints.addAll(serversIt.next().getEndpoint());
+    	}
     }
     
     /**
@@ -62,7 +68,7 @@ public class ServerTest
      */
     public void testCorrectPort()
     {
-    	assertEquals("Wrong port number!", 1234, server1.getPort().intValue());
+    	assertEquals("Wrong port number!", 1234, servers.get(0).getPort().intValue());
     }
     
     /**
@@ -70,7 +76,7 @@ public class ServerTest
      */
     public void testWrongPort()
     {
-    	assertTrue ("Wrong port number!", 8080 != server1.getPort().intValue());
+    	assertTrue ("Wrong port number!", 8080 != servers.get(0).getPort().intValue());
     }
     
     /**
@@ -78,9 +84,9 @@ public class ServerTest
      */
     public void testCorrectCountOfEndpoints()
     {
-    	assertEquals ("Wrong count of endpoints!", 1, server1.getEndpoint().size());
-    	assertEquals ("Wrong count of endpoints!", 2, server2.getEndpoint().size());
-    	assertEquals ("Wrong count of endpoints!", 2, server3.getEndpoint().size());
+    	assertEquals ("Wrong count of endpoints!", 1, servers.get(0).getEndpoint().size());
+    	assertEquals ("Wrong count of endpoints!", 2, servers.get(1).getEndpoint().size());
+    	assertEquals ("Wrong count of endpoints!", 2, servers.get(2).getEndpoint().size());
     }
     
     /**
@@ -88,9 +94,9 @@ public class ServerTest
      */
     public void testWrongCountOfEndpoints()
     {
-    	assertTrue ("Wrong count of endpoints!", 0 != server1.getEndpoint().size());
-    	assertTrue ("Wrong count of endpoints!", 0 != server2.getEndpoint().size());
-    	assertTrue ("Wrong count of endpoints!", 0 != server3.getEndpoint().size());
+    	assertTrue ("Wrong count of endpoints!", 0 != servers.get(0).getEndpoint().size());
+    	assertTrue ("Wrong count of endpoints!", 0 != servers.get(1).getEndpoint().size());
+    	assertTrue ("Wrong count of endpoints!", 0 != servers.get(2).getEndpoint().size());
     }
     
     /**
@@ -98,12 +104,13 @@ public class ServerTest
      */
     public void testLoadWrongConfig()
     {
-    	final URL configFile4 = ServerTest.class.getResource("../testConfig4.xml");
     	try {
-    		unmarshaller.unmarshal(new File(configFile4.toURI()));
-    		assertTrue("No Exception was thrown", false);
+	    	final URL configFile4 = ServerTest.class.getResource(wrongConfigFile);
+	    	ConfigLoader configLoader4 = new ConfigLoader(new File(configFile4.toURI()), fileType);
+	    	ArrayList<Server> servers = configLoader4.load();
+			assertEquals("No server should be found", 0, servers.size());
     	} catch (Exception e) {
-    		assertTrue(true);
+    		assertTrue("Exception was thrown: " + e, false);
     	}
     }
     

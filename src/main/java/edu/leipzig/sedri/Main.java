@@ -66,7 +66,7 @@ public class Main {
     	
     	ArrayList<org.eclipse.jetty.server.Server> webservers = new ArrayList<org.eclipse.jetty.server.Server>();
     	
-    	// load webservices ansd start server
+    	// load webservices and start server
     	for(Iterator<Server> it = servers.iterator(); it.hasNext(); ) {
     		// load webservices
     		Server server = it.next();

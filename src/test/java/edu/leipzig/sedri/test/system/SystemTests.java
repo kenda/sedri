@@ -14,7 +14,7 @@ public class SystemTests
     public static Test suite()
     {
     	TestSuite suite = new TestSuite();
-    	suite.addTestSuite(WebserviceTest.class);
+    	suite.addTestSuite(WebserviceXMLTest.class);
         return suite;
     }
 }

@@ -138,7 +138,7 @@ public class ConfigLoader {
 				endpoint.setUrl(urlPath);
 			} else {
 				System.err.println("No URL-path found for endpoint " + endpointNode.getURI());
-				break;
+				//break;
 			}
 			
 			// load resultFormat
@@ -147,7 +147,7 @@ public class ConfigLoader {
 				endpoint.setFormat(resultFormat);
 			} else {
 				System.err.println("No result format found for endpoint " + endpointNode.getURI());
-				break;
+				//break;
 			}
 			
 			// load preprocessor
@@ -162,9 +162,22 @@ public class ConfigLoader {
 				endpoint.setPostprocessors(postProcessors);
 			}
 			
-			// TODO: hier gehts weiter mit dem laden von param und sources
+			// load param
+			Params params = loadParams(model, endpointNode);
+			if (0 != params.getParam().size()) {
+				endpoint.setParams(params);
+			}
 			
-			System.out.println(endpoint.getPostprocessors().getPostprocessor());
+			// load sources
+			Sources sources = loadSources(model, endpointNode);
+			if (0 != sources.getSource().size()) {
+				endpoint.setSources(sources);
+			} else {
+				System.err.println("No sources found for endpoint " + endpointNode.getURI());
+				//break;
+			}
+			
+			endpoints.add(endpoint);
 		}
 		
 		return endpoints;
@@ -179,8 +192,12 @@ public class ConfigLoader {
 		Node urlPathPropertyNode = NodeFactory.createURI("http://sedri.de/vocab/url-path");
 		Node urlPathVariableNode = NodeFactory.createVariable("urlPath");
 		ExtendedIterator<Triple> urlPathLiterals = model.getGraph().find(endpointNode, urlPathPropertyNode, urlPathVariableNode);
-		
-		return (String) urlPathLiterals.next().getMatchObject().getLiteralValue();
+
+		String resultValue = "";
+		if (urlPathLiterals.hasNext()) {
+			resultValue = (String) urlPathLiterals.next().getMatchObject().getLiteralValue();
+		}
+		return resultValue;
 	}
 	
 	/**
@@ -192,14 +209,18 @@ public class ConfigLoader {
 		Node resultFormatPropertyNode = NodeFactory.createURI("http://sedri.de/vocab/resultFormat");
 		Node resultFormatVariableNode = NodeFactory.createVariable("resultFormat");
 		ExtendedIterator<Triple> resultFormatLiterals = model.getGraph().find(endpointNode, resultFormatPropertyNode, resultFormatVariableNode);
-		
-		return (String) resultFormatLiterals.next().getMatchObject().getLiteralValue();
+
+		String resultValue = "";
+		if (resultFormatLiterals.hasNext()) {
+			resultValue = (String) resultFormatLiterals.next().getMatchObject().getLiteralValue();
+		}
+		return resultValue;
 	}
 	
 	/**
 	 * Load Preprocessors from an endpoint of a rdf config ontology
 	 * 
-	 * @return Preprocessors The preprocessors of the endpoint
+	 * @return preprocessors The preprocessors of the endpoint
 	 */
 	private Preprocessors loadPreProcessors(Model model, Node endpointNode) {
 		Preprocessors preprocessors = new Preprocessors();
@@ -215,7 +236,7 @@ public class ConfigLoader {
 	/**
 	 * Load Postprocessors from an endpoint of a rdf config ontology
 	 * 
-	 * @return Postprocessors The postprocessors of the endpoint
+	 * @return postprocessors The postprocessors of the endpoint
 	 */
 	private Postprocessors loadPostProcessors(Model model, Node endpointNode) {
 		Postprocessors postprocessors = new Postprocessors();
@@ -226,5 +247,94 @@ public class ConfigLoader {
 			postprocessors.getPostprocessor().add((String) postProcessorLiterals.next().getObject().getLiteralValue());
 		}
 		return postprocessors;
+	}
+	
+	/**
+	 * Load Params from an endpoint of a rdf config ontology
+	 * 
+	 * @return params The Params of the endpoint
+	 */
+	private Params loadParams(Model model, Node endpointNode) {
+		Params params = new Params();
+		Node paramPropertyNode = NodeFactory.createURI("http://sedri.de/vocab/param");
+		Node paramVariableNode = NodeFactory.createVariable("params");
+		ExtendedIterator<Triple> paramLiterals = model.getGraph().find(endpointNode, paramPropertyNode, paramVariableNode);
+		while (paramLiterals.hasNext()) {
+			params.getParam().add((String) paramLiterals.next().getObject().getLiteralValue());
+		}
+		return params;
+	}
+	
+	/**
+	 * Load Sources from an endpoint of a rdf config ontology
+	 * 
+	 * @return sources The Sources of the endpoint
+	 */
+	private Sources loadSources(Model model, Node endpointNode) {
+		Sources sources = new Sources();
+		Node sourcePropertyNode = NodeFactory.createURI("http://sedri.de/vocab/sources");
+		Node sourceVariableNode = NodeFactory.createVariable("sources");
+		ExtendedIterator<Triple> sourceResources = model.getGraph().find(endpointNode, sourcePropertyNode, sourceVariableNode);
+		
+		while (sourceResources.hasNext()) {
+			Sources.Source source = new Sources.Source();
+			Node sourceNode = sourceResources.next().getObject();
+			
+			// load sourceURL
+			String sourceURL = loadSourceURL(model, sourceNode);
+			if (!sourceURL.isEmpty()) {
+				source.setUrl(sourceURL);
+			} else {
+				System.err.println("No source URL found for source of endpoint " + endpointNode.getURI());
+				//break;
+			}
+			
+			// load sparqlQuery
+			String sparqlQuery = loadSparqlQuery(model, sourceNode);
+			if (!sparqlQuery.isEmpty()) {
+				source.setQuery(sparqlQuery);
+			} else {
+				System.err.println("No source Query found for source of endpoint " + endpointNode.getURI());
+				//break;
+			}
+			
+			sources.getSource().add(source);
+		}
+		return sources;
+	}
+	
+	/**
+	 * Load source URL from a source of an endpoint in a rdf config ontology
+	 * 
+	 * @return sourceURL The source URL of the endpoint
+	 */
+	private String loadSourceURL(Model model, Node endpointNode) {
+		Node sourceURLPropertyNode = NodeFactory.createURI("http://sedri.de/vocab/sourceURL");
+		Node sourceURLVariableNode = NodeFactory.createVariable("sourceURL");
+		ExtendedIterator<Triple> sourceURLLiterals = model.getGraph().find(endpointNode, sourceURLPropertyNode, sourceURLVariableNode);
+		
+		String resultValue = "";
+		if (sourceURLLiterals.hasNext()) {
+			resultValue = (String) sourceURLLiterals.next().getMatchObject().getLiteralValue();
+		}
+		return resultValue;
+	}
+	
+	/**
+	 * Load Sparql Query from a source of an endpoint in a rdf config ontology
+	 * 
+	 * @return sparqlQuery The Sparql Query of the endpoint
+	 */
+	private String loadSparqlQuery(Model model, Node endpointNode) {
+		Node sparqlQueryPropertyNode = NodeFactory.createURI("http://sedri.de/vocab/sparqlQuery");
+		Node sparqlQueryVariableNode = NodeFactory.createVariable("sparqlQuery");
+		ExtendedIterator<Triple> sparqlQueryLiterals = model.getGraph().find(endpointNode, sparqlQueryPropertyNode, sparqlQueryVariableNode);
+		
+		String resultValue = "";
+		if (sparqlQueryLiterals.hasNext()) {
+			resultValue = (String) sparqlQueryLiterals.next().getMatchObject().getLiteralValue();
+		}
+			
+		return resultValue;
 	}
 }
