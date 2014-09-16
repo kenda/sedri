@@ -22,7 +22,7 @@
                              
                              dct:contributor "Marcus Nitzschke" ;
                              
-                             owl:versionInfo "0.1" .
+                             owl:versionInfo "0.2" .
 
 
 #################################################################
@@ -177,22 +177,6 @@ owl:versionInfo rdf:type owl:AnnotationProperty .
               rdfs:domain :SPARQLNode ;
               
               rdfs:range xsd:string .
-
-
-
-###  http://www.sedri.de/vocab/sourceIndex
-
-:sourceIndex rdf:type owl:DatatypeProperty ;
-             
-             rdfs:label "Quellenindex"@de ,
-                        "Sourceindex"@en ;
-             
-             rdfs:comment "Quellenindex um eine Reihenfolge der Quellzugriffspunkte zu konfigurieren."@de ,
-                          "Index of the source endpoint to configure a order."@en ;
-             
-             rdfs:domain :Source ;
-             
-             rdfs:range xsd:integer .
 
 
 
