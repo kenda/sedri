@@ -1,21 +1,17 @@
 package edu.leipzig.sedri.test.unit;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Unit test for simple App.
  */
-public class UnitTests	
-{
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-    	TestSuite suite = new TestSuite();
-    	suite.addTestSuite(ConfigLoaderTest.class);
-    	suite.addTestSuite(QueryProcessorTest.class);
-        return suite;
-    }
+@RunWith(Suite.class)
+@SuiteClasses({
+        ConfigLoaderTest.class,
+        QueryProcessorTest.class
+})
+public class UnitTests {
 }

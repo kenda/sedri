@@ -8,12 +8,9 @@ public class ServerXMLTest
 {
     /**
      * Create the test case
-     *
-     * @param testName name of the test case
      */
-    public ServerXMLTest( String testName )
+    public ServerXMLTest( )
     {
-        super( testName );
     	super.fileType = "xml";
     	super.configFiles.add("../testConfig1.xml");
     	super.configFiles.add("../testConfig2.xml");

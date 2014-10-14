@@ -1,6 +1,7 @@
 package edu.leipzig.sedri.test.integration;
 
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -14,9 +15,7 @@ import java.net.URL;
 /**
  * Unit test for simple App.
  */
-public abstract class ServerTest 
-    extends TestCase
-{
+public abstract class ServerTest {
 	protected String			fileType;
 	protected List<String>		configFiles;
 	protected String			wrongConfigFile;
@@ -26,18 +25,16 @@ public abstract class ServerTest
 	
     /**
      * Create the test case
-     *
-     * @param testName name of the test case
      */
-    public ServerTest( String testName )
+    public ServerTest()
     {
-        super( testName );
     	configFiles = new ArrayList<String>();
     	servers = new ArrayList<Server>();
     	endpoints = new ArrayList<Endpoint>();
     }
 
-    protected void setUp() throws Exception
+    @Before
+    public void setUp() throws Exception
     {
     	Iterator<String> configFilesIt = configFiles.iterator();
     	
@@ -66,6 +63,7 @@ public abstract class ServerTest
     /**
      * Test correct port of the server
      */
+    @Test
     public void testCorrectPort()
     {
     	assertEquals("Wrong port number!", 1234, servers.get(0).getPort().intValue());
@@ -74,6 +72,7 @@ public abstract class ServerTest
     /**
      * Test wrong port of the server
      */
+    @Test
     public void testWrongPort()
     {
     	assertTrue ("Wrong port number!", 8080 != servers.get(0).getPort().intValue());
@@ -82,6 +81,7 @@ public abstract class ServerTest
     /**
      * Test correct count of endpoints of the server
      */
+    @Test
     public void testCorrectCountOfEndpoints()
     {
     	assertEquals ("Wrong count of endpoints!", 1, servers.get(0).getEndpoint().size());
@@ -92,6 +92,7 @@ public abstract class ServerTest
     /**
      * Test wrong count of endpoints of the server
      */
+    @Test
     public void testWrongCountOfEndpoints()
     {
     	assertTrue ("Wrong count of endpoints!", 0 != servers.get(0).getEndpoint().size());
@@ -102,6 +103,7 @@ public abstract class ServerTest
     /**
      * Test load wrong config
      */
+    @Test
     public void testLoadWrongConfig()
     {
     	try {
@@ -121,6 +123,7 @@ public abstract class ServerTest
     /**
      * Test correct endpoint count
      */
+    @Test
     public void testCorrectEndpointCount()
     {
     	assertEquals ("Wrong entpoint count!", 5, endpoints.size());
@@ -129,6 +132,7 @@ public abstract class ServerTest
     /**
      * Test correct endpoint url
      */
+    @Test
     public void testCorrectEndpointURL()
     {
     	assertEquals ("Wrong entpoint url!", "/test", endpoints.get(0).getUrl());
@@ -145,6 +149,7 @@ public abstract class ServerTest
     /**
      * Test correct params count
      */
+    @Test
     public void testCorrectParamsCount()
     {
     	assertEquals ("Wrong params count!", 1, endpoints.get(0).getParams().getParam().size());
@@ -157,6 +162,7 @@ public abstract class ServerTest
     /**
      * Test correct params
      */
+    @Test
     public void testCorrectParams()
     {
     	assertEquals ("Wrong params!", "class", endpoints.get(0).getParams().getParam().get(0).toString());
@@ -174,6 +180,7 @@ public abstract class ServerTest
     /**
      * Test correct PreProcessor count
      */
+    @Test
     public void testCorrectPreProcessorCount()
     {
     	assertEquals ("Wrong preprocessor count!", 1, endpoints.get(0).getPreprocessors().getPreprocessor().size());
@@ -186,6 +193,7 @@ public abstract class ServerTest
     /**
      * Test correct PostProcessor count
      */
+    @Test
     public void testCorrectPostProcessorCount()
     {
     	assertEquals ("Wrong postprocessor count!", 1, endpoints.get(0).getPostprocessors().getPostprocessor().size());
@@ -198,6 +206,7 @@ public abstract class ServerTest
     /**
      * Test correct PreProcessor
      */
+    @Test
     public void testCorrectPreProcessor()
     {
     	assertEquals ("Wrong preprocessor!", "edu.leipzig.sedri.test.TestPreprocessor", endpoints.get(0).getPreprocessors().getPreprocessor().get(0).toString());
@@ -225,6 +234,7 @@ public abstract class ServerTest
     /**
      * Test correct Sources count
      */
+    @Test
     public void testCorrectSourcesCount()
     {
     	assertEquals ("Wrong sources count!", 2, endpoints.get(0).getSources().getSource().size());
@@ -237,6 +247,7 @@ public abstract class ServerTest
     /**
      * Test correct Sources urls
      */
+    @Test
     public void testCorrectSourcesUrls()
     {
     	assertEquals ("Wrong sources url!", "http://dbpedia.org/sparql", endpoints.get(0).getSources().getSource().get(0).getUrl());
@@ -249,6 +260,7 @@ public abstract class ServerTest
     /**
      * Test correct Sources queries
      */
+    @Test
     public void testCorrectSourcesQueries()
     {
     	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://dbpedia.org/ontology/$class>. FILTER regex(?s, \"Methylfentanyl\")} order by ?s limit 1", endpoints.get(0).getSources().getSource().get(0).getQuery());
@@ -260,6 +272,7 @@ public abstract class ServerTest
     /**
      * Test correct Format
      */
+    @Test
     public void testCorrectFormat()
     {
     	assertEquals ("Wrong format!", "RDF/XML", endpoints.get(0).getFormat());

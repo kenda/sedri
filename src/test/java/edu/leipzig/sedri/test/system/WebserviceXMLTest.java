@@ -8,13 +8,9 @@ public class WebserviceXMLTest
 {
     /**
      * Create the test case
-     *
-     * @param testName name of the test case
      */
-    public WebserviceXMLTest( String testName )
+    public WebserviceXMLTest()
     {
-        super( testName );
-
         super.fileType = "xml";
         super.configFiles.add("../testConfig1.xml");
         super.configFiles.add("../testConfig5.xml");

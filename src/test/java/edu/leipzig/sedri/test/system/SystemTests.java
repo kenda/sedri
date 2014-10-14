@@ -1,20 +1,17 @@
 package edu.leipzig.sedri.test.system;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * Unit test for simple App.
  */
-public class SystemTests	
-{
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-    	TestSuite suite = new TestSuite();
-    	suite.addTestSuite(WebserviceXMLTest.class);
-        return suite;
-    }
+@RunWith(Suite.class)
+@SuiteClasses({
+        WebserviceXMLTest.class
+})
+public class SystemTests {
+
 }

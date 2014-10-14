@@ -1,6 +1,7 @@
 package edu.leipzig.sedri.test.system;
 
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -21,8 +22,7 @@ import com.hp.hpl.jena.rdf.model.*;
 /**
  * Unit test for simple App.
  */
-public abstract class WebserviceTest 
-    extends TestCase
+public abstract class WebserviceTest
 {
 	protected String								fileType;
 	protected List<String>							configFiles;
@@ -33,18 +33,16 @@ public abstract class WebserviceTest
 	
     /**
      * Create the test case
-     *
-     * @param testName name of the test case
      */
-    public WebserviceTest( String testName )
+    public WebserviceTest()
     {
-        super( testName );
     	configFiles = new ArrayList<String>();
     	servers = new ArrayList<Server>();
     	webservers = new ArrayList<org.eclipse.jetty.server.Server>();
     }
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
     	
     	/*
     	 * Setup Webserver
@@ -80,8 +78,9 @@ public abstract class WebserviceTest
     	
     	webClient = new WebClient();
     }
-    
-    protected void tearDown() throws Exception {
+
+    @After
+    public void tearDown() throws Exception {
     	Iterator<org.eclipse.jetty.server.Server> webserversIt = webservers.iterator();
     	
     	while (webserversIt.hasNext()) {
@@ -92,6 +91,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for correct model size
      */
+    @Test
     public void testWebServiceCorrectModelSize() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();
@@ -102,6 +102,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for correct resource exists
      */
+    @Test
     public void testWebServiceCorrectResourceExist() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();
@@ -114,6 +115,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for resource not exists
      */
+    @Test
     public void testWebServiceResourceNotExist() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();
@@ -126,6 +128,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for correct PreProcessor
      */
+    @Test
     public void testWebServiceCorrectPreProcessor() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();
@@ -138,6 +141,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for wrong PreProcessor
      */
+    @Test
     public void testWebServiceWrongPreProcessor() throws Exception
     {
     	HtmlPage currentPage = webClient.getPage("http://localhost:9876/test1?class=Drug");
@@ -147,6 +151,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for correct PostProcessor
      */
+    @Test
     public void testWebServiceCorrectPostProcessor() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();
@@ -160,6 +165,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for wrong PostProcessor
      */
+    @Test
     public void testWebServiceWrongPostProcessor() throws Exception
     {
     	HtmlPage currentPage = webClient.getPage("http://localhost:9876/test2?class=Drug");
@@ -169,6 +175,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for wrong Param
      */
+    @Test
     public void testWebServiceWrongParam() throws Exception
     {
     	HtmlPage currentPage = webClient.getPage("http://localhost:9876/test3?wrongclass=Drug");
@@ -178,6 +185,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice for incompatible query types
      */
+    @Test
     public void testWebServiceIncompatibleQueryTypes() throws Exception
     {
     	HtmlPage currentPage = webClient.getPage("http://localhost:9876/test4?class=Drug");
@@ -187,6 +195,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice with two correct DESCRIBE queries
      */
+    @Test
     public void testWebServiceTwoCorrectDescribeQueries() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();
@@ -202,6 +211,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice with one correct and one wrong DESCRIBE query
      */
+    @Test
     public void testWebServiceCorractAndWrongDescribeQuery() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();
@@ -217,6 +227,7 @@ public abstract class WebserviceTest
     /**
      * Test Webservice with two wrong DESCRIBE queries
      */
+    @Test
     public void testWebServiceTwoWrongDescribeQueries() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();

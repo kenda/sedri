@@ -6,28 +6,18 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import junit.framework.TestCase;
+import org.junit.*;
+import static org.junit.Assert.*;
 import edu.leipzig.sedri.ConfigLoader;
 import edu.leipzig.sedri.Server;
 
 public class ConfigLoaderTest
-	extends TestCase
-{	
-	
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public ConfigLoaderTest( String testName )
-    {
-        super( testName );
-    }
-    
+{
     /**
      * Test ConfigLoader with correct xml file
      * @throws URISyntaxException 
      */
+    @Test
 	public void testLoadCorrectXML() throws URISyntaxException {
 		URL resourceUrl = getClass(). getResource("../testConfig1.xml");
     	assertNotNull("Test file missing", resourceUrl);
@@ -42,6 +32,7 @@ public class ConfigLoaderTest
      * Test ConfigLoader with correct rdf file
      * @throws URISyntaxException 
      */
+    @Test
 	public void testLoadCorrectRDF() throws URISyntaxException {
 		URL resourceUrl = getClass(). getResource("../testconfig-ontologie.ttl");
     	assertNotNull("Test file missing", resourceUrl);
@@ -56,6 +47,7 @@ public class ConfigLoaderTest
      * Test ConfigLoader with wrong file type
      * @throws URISyntaxException 
      */
+    @Test
 	public void testLoadWrongFiletype() throws URISyntaxException {
 		URL resourceUrl = getClass(). getResource("../testConfig1.xml");
     	assertNotNull("Test file missing", resourceUrl);
@@ -70,6 +62,7 @@ public class ConfigLoaderTest
      * Test ConfigLoader with wrong file
      * @throws URISyntaxException 
      */
+    @Test
 	public void testLoadWrongFile() {
 		
 		ConfigLoader configLoader = new ConfigLoader(new File("t1e2s3tConfig.xml"), "xml");
