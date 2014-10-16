@@ -40,7 +40,7 @@ public class QueryProcessorTest
     public void testMethodeProcessCorrect() throws NoSuchAlgorithmException
     {
     	Model resultModel = queryProcessor.process(endpoint, queryString, params);
-        assertEquals(55, resultModel.size());
+        assertEquals((long) 55, resultModel.size());
     }
     
     /**
@@ -52,7 +52,7 @@ public class QueryProcessorTest
     {
     	Model resultModel = queryProcessor.process("http://www.g1oogle.de", queryString, params);
 
-    	assertEquals(0, resultModel.size());
+    	assertEquals((long) 0, resultModel.size());
         assertEquals("<ModelCom   {} | >", resultModel.toString());
     }
     
@@ -69,7 +69,7 @@ public class QueryProcessorTest
         	assertTrue("No Exception was thrown", false);
     	} catch (QueryParseException e) {
             assertEquals(-1992127352, resultModel.toString().hashCode());
-            assertEquals(0, resultModel.size());
+            assertEquals((long) 0, resultModel.size());
     	}
     }
     
@@ -87,7 +87,7 @@ public class QueryProcessorTest
         	assertTrue("No Exception was thrown", false);
     	} catch (QueryParseException e) {
             assertEquals(-1992127352, resultModel.toString().hashCode());
-            assertEquals(0, resultModel.size());
+            assertEquals((long) 0, resultModel.size());
     	}
     }
 }

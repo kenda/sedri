@@ -96,7 +96,7 @@ public abstract class WebserviceTest
     {
     	Model model = ModelFactory.createDefaultModel();
     	model.getReader().read(model, "http://localhost:1234/test?class=Drug");
-    	assertEquals("Return Model has wrong size!", 15, model.size());
+    	assertEquals("Return Model has wrong size!", (long) 15, model.size());
     }
     
     /**
@@ -239,7 +239,7 @@ public abstract class WebserviceTest
     	Resource resource2 = ResourceFactory.createResource("http://bio2rdf.org/drugbank_vocabulary:Drug");
     	assertTrue("Resource should not be found!", !model.containsResource(resource2));
     	
-    	assertEquals("Return Model has wrong size!", 0, model.size());
+    	assertEquals("Return Model has wrong size!", (long) 0, model.size());
     }
     
 }
