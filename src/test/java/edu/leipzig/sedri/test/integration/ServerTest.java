@@ -66,16 +66,23 @@ public abstract class ServerTest {
     @Test
     public void testCorrectPort()
     {
-    	assertEquals("Wrong port number!", 1234, servers.get(0).getPort().intValue());
-    }
-    
-    /**
-     * Test wrong port of the server
-     */
-    @Test
-    public void testWrongPort()
-    {
-    	assertTrue ("Wrong port number!", 8080 != servers.get(0).getPort().intValue());
+        boolean firstPort = false;
+        boolean secondPort = false;
+        boolean thirdPort = false;
+
+        Iterator<Server> serversIt = servers.iterator();
+        while (serversIt.hasNext()) {
+            Server server = serversIt.next();
+            if (1234 == server.getPort().intValue() && !firstPort)
+                firstPort = true;
+            if (5678 == server.getPort().intValue() && !secondPort)
+                secondPort = true;
+            if (9876 == server.getPort().intValue() && !thirdPort)
+                thirdPort = true;
+        }
+        assertTrue("Wrong port number! Correct on is 1234", firstPort);
+        assertTrue("Wrong port number! Correct on is 5678", secondPort);
+        assertTrue("Wrong port number! Correct on is 9876", thirdPort);
     }
     
     /**
@@ -84,20 +91,7 @@ public abstract class ServerTest {
     @Test
     public void testCorrectCountOfEndpoints()
     {
-    	assertEquals ("Wrong count of endpoints!", 1, servers.get(0).getEndpoint().size());
-    	assertEquals ("Wrong count of endpoints!", 2, servers.get(1).getEndpoint().size());
-    	assertEquals ("Wrong count of endpoints!", 2, servers.get(2).getEndpoint().size());
-    }
-    
-    /**
-     * Test wrong count of endpoints of the server
-     */
-    @Test
-    public void testWrongCountOfEndpoints()
-    {
-    	assertTrue ("Wrong count of endpoints!", 0 != servers.get(0).getEndpoint().size());
-    	assertTrue ("Wrong count of endpoints!", 0 != servers.get(1).getEndpoint().size());
-    	assertTrue ("Wrong count of endpoints!", 0 != servers.get(2).getEndpoint().size());
+    	assertEquals ("Wrong count of endpoints!", 5, endpoints.size());
     }
     
     /**
@@ -112,7 +106,11 @@ public abstract class ServerTest {
 	    	ArrayList<Server> servers = configLoader4.load();
 			assertEquals("No server should be found", 0, servers.size());
     	} catch (Exception e) {
-    		assertTrue("Exception was thrown: " + e, false);
+            if (e.getMessage().contains("[line: 17, col: 31] Unrecognized: [SEMICOLON]")) {
+                assertTrue(true);
+            } else {
+                assertTrue("Exception was thrown: " + e, false);
+            }
     	}
     }
     
@@ -135,11 +133,35 @@ public abstract class ServerTest {
     @Test
     public void testCorrectEndpointURL()
     {
-    	assertEquals ("Wrong entpoint url!", "/test", endpoints.get(0).getUrl());
-    	assertEquals ("Wrong entpoint url!", "/test1", endpoints.get(1).getUrl());
-    	assertEquals ("Wrong entpoint url!", "/test2/test3", endpoints.get(2).getUrl());
-    	assertEquals ("Wrong entpoint url!", "", endpoints.get(3).getUrl());
-    	assertEquals ("Wrong entpoint url!", null, endpoints.get(4).getUrl());
+        boolean firstEndpoint = false;
+        boolean secondEndpoint = false;
+        boolean thirdEndpoint = false;
+        boolean fourthEndpoint = false;
+        boolean fifthEndpoint = false;
+
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+
+            if (null == endpoint.getUrl() && !fifthEndpoint) {
+                fifthEndpoint = true;
+            } else if (null == endpoint.getUrl() && !fourthEndpoint) {
+                fourthEndpoint = true;
+            } else if (endpoint.getUrl().equals("/test2/test3") && !thirdEndpoint) {
+                thirdEndpoint = true;
+            } else if (endpoint.getUrl().equals("/test1") && !secondEndpoint) {
+                secondEndpoint = true;
+            } else if (endpoint.getUrl().equals("/test") && !firstEndpoint) {
+                firstEndpoint = true;
+            } else if (endpoint.getUrl().equals("") && !fourthEndpoint) {
+                fourthEndpoint = true;
+            }
+        }
+        assertTrue("Wrong entpoint url! Correct on is /test", firstEndpoint);
+        assertTrue("Wrong entpoint url! Correct on is /test1", secondEndpoint);
+        assertTrue("Wrong entpoint url! Correct on is /test2/test3", thirdEndpoint);
+        assertTrue("Wrong entpoint url! Correct on is '' or null", fourthEndpoint);
+        assertTrue("Wrong entpoint url! Correct on is null", fifthEndpoint);
     }
     
     /**
@@ -150,27 +172,63 @@ public abstract class ServerTest {
      * Test correct params count
      */
     @Test
-    public void testCorrectParamsCount()
+    public void testCorrectParamCount()
     {
-    	assertEquals ("Wrong params count!", 1, endpoints.get(0).getParams().getParam().size());
-    	assertEquals ("Wrong params count!", null, endpoints.get(1).getParams());
-    	assertEquals ("Wrong params count!", 2, endpoints.get(2).getParams().getParam().size());
-    	assertEquals ("Wrong params count!", 1, endpoints.get(3).getParams().getParam().size());
-    	assertEquals ("Wrong params count!", 2, endpoints.get(4).getParams().getParam().size());
+        int paramsCount = 0;
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getParams()) {
+                paramsCount += endpoint.getParams().getParam().size();
+            }
+        }
+    	assertTrue("Wrong count of params!", 5 == paramsCount || 6 == paramsCount);
     }
-    
+
     /**
      * Test correct params
      */
     @Test
     public void testCorrectParams()
     {
-    	assertEquals ("Wrong params!", "class", endpoints.get(0).getParams().getParam().get(0).toString());
-    	assertEquals ("Wrong params!", "testLimit", endpoints.get(2).getParams().getParam().get(0).toString());
-    	assertEquals ("Wrong params!", "testLimit", endpoints.get(2).getParams().getParam().get(1).toString());
-    	assertEquals ("Wrong params!", "", endpoints.get(3).getParams().getParam().get(0).toString());
-    	assertEquals ("Wrong params!", "testLimit", endpoints.get(4).getParams().getParam().get(0).toString());
-    	assertEquals ("Wrong params!", "testOrder", endpoints.get(4).getParams().getParam().get(1).toString());
+        boolean firstParam = false;
+        boolean secondParam = false;
+        boolean thirdParam = false;
+        boolean fourthParam = false;
+        boolean fifthParam = false;
+        boolean sixthParam = false;
+
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getParams()) {
+                Iterator<String> paramsIt = endpoint.getParams().getParam().iterator();
+                while (paramsIt.hasNext()) {
+                    String param = paramsIt.next();
+                    if (param.equals("testOrder") && !sixthParam) {
+                        sixthParam = true;
+                    } else if (param.equals("testLimit") && !fifthParam) {
+                        fifthParam = true;
+                    } else if (param.equals("testLimit") && !thirdParam) {
+                        thirdParam = true;
+                    } else if (param.equals("testLimit") && !secondParam) {
+                        secondParam = true;
+                    } else if (param.equals("class") && !firstParam) {
+                        firstParam = true;
+                    } else if (param.equals("") && !fourthParam) {
+                        fourthParam = true;
+                    }
+                }
+            } else if (!secondParam) {
+                secondParam = true;
+            }
+        }
+        assertTrue("Wrong param! Correct on is class", firstParam);
+        assertTrue("Wrong param! Correct on is testLimit", secondParam);
+        assertTrue("Wrong param! Correct on is testLimit", thirdParam);
+        assertTrue("Wrong param! Correct on is '' or null", fourthParam);
+        assertTrue("Wrong param! Correct on is testLimit", fifthParam);
+        assertTrue("Wrong param! Correct on is testOrder", sixthParam);
     }
     
     /**
@@ -183,11 +241,15 @@ public abstract class ServerTest {
     @Test
     public void testCorrectPreProcessorCount()
     {
-    	assertEquals ("Wrong preprocessor count!", 1, endpoints.get(0).getPreprocessors().getPreprocessor().size());
-    	assertEquals ("Wrong preprocessor count!", 1, endpoints.get(1).getPreprocessors().getPreprocessor().size());
-    	assertEquals ("Wrong preprocessor count!", null, endpoints.get(2).getPreprocessors());
-    	assertEquals ("Wrong preprocessor count!", 1, endpoints.get(3).getPreprocessors().getPreprocessor().size());
-    	assertEquals ("Wrong preprocessor count!", 2, endpoints.get(4).getPreprocessors().getPreprocessor().size());
+        int preProcessorCount = 0;
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getPreprocessors()) {
+                preProcessorCount += endpoint.getPreprocessors().getPreprocessor().size();
+            }
+        }
+        assertEquals("Wrong count of PreProcessors!", 5, preProcessorCount);
     }
     
     /**
@@ -196,35 +258,91 @@ public abstract class ServerTest {
     @Test
     public void testCorrectPostProcessorCount()
     {
-    	assertEquals ("Wrong postprocessor count!", 1, endpoints.get(0).getPostprocessors().getPostprocessor().size());
-    	assertEquals ("Wrong postprocessor count!", null, endpoints.get(1).getPostprocessors());
-    	assertEquals ("Wrong postprocessor count!", 1, endpoints.get(2).getPostprocessors().getPostprocessor().size());
-    	assertEquals ("Wrong postprocessor count!", 0, endpoints.get(3).getPostprocessors().getPostprocessor().size());
-    	assertEquals ("Wrong postprocessor count!", 2, endpoints.get(4).getPostprocessors().getPostprocessor().size());
+        int postProcessorCount = 0;
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getPostprocessors()) {
+                postProcessorCount += endpoint.getPostprocessors().getPostprocessor().size();
+            }
+        }
+        assertEquals("Wrong count of PostProcessors!", 4, postProcessorCount);
     }
     
     /**
-     * Test correct PreProcessor
+     * Test correct PreProcessors
      */
     @Test
-    public void testCorrectPreProcessor()
+    public void testCorrectPreProcessors()
     {
-    	assertEquals ("Wrong preprocessor!", "edu.leipzig.sedri.test.TestPreprocessor", endpoints.get(0).getPreprocessors().getPreprocessor().get(0).toString());
-    	assertEquals ("Wrong preprocessor!", "edu.leipzig.sedri.test.TestPreprocessor", endpoints.get(1).getPreprocessors().getPreprocessor().get(0).toString());
-    	assertEquals ("Wrong preprocessor!", "", endpoints.get(3).getPreprocessors().getPreprocessor().get(0).toString());
-    	assertEquals ("Wrong preprocessor!", "edu.leipzig.sedri.test.TestPreprocessor", endpoints.get(4).getPreprocessors().getPreprocessor().get(0).toString());
-    	assertEquals ("Wrong preprocessor!", "edu.leipzig.sedri.test.WrongTestPreprocessor", endpoints.get(4).getPreprocessors().getPreprocessor().get(1).toString());
+        boolean firstPreProcessor = false;
+        boolean secondPreProcessor = false;
+        boolean thirdPreProcessor = false;
+        boolean fourthPreProcessor = false;
+        boolean fifthPreProcessor = false;
+
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getPreprocessors()) {
+                Iterator<String> preProcessorsIt = endpoint.getPreprocessors().getPreprocessor().iterator();
+                while (preProcessorsIt.hasNext()) {
+                    String preProcessor = preProcessorsIt.next();
+                    if (preProcessor.equals("edu.leipzig.sedri.test.WrongTestPreprocessor") && !fifthPreProcessor) {
+                        fifthPreProcessor = true;
+                    } else if (preProcessor.equals("edu.leipzig.sedri.test.TestPreprocessor") && !fourthPreProcessor) {
+                        fourthPreProcessor = true;
+                    } else if (preProcessor.equals("edu.leipzig.sedri.test.TestPreprocessor") && !secondPreProcessor) {
+                        secondPreProcessor = true;
+                    } else if (preProcessor.equals("edu.leipzig.sedri.test.TestPreprocessor") && !firstPreProcessor) {
+                        firstPreProcessor = true;
+                    } else if (preProcessor.equals("") && !thirdPreProcessor) {
+                        thirdPreProcessor = true;
+                    }
+                }
+            }
+        }
+        assertTrue("Wrong PreProcessor! Correct on is edu.leipzig.sedri.test.TestPreprocessor", firstPreProcessor);
+        assertTrue("Wrong PreProcessor! Correct on is edu.leipzig.sedri.test.TestPreprocessor", secondPreProcessor);
+        assertTrue("Wrong PreProcessor! Correct on is '' or null", thirdPreProcessor);
+        assertTrue("Wrong PreProcessor! Correct on is edu.leipzig.sedri.test.TestPreprocessor", fourthPreProcessor);
+        assertTrue("Wrong PreProcessor! Correct on is edu.leipzig.sedri.test.WrongTestPreprocessor", fifthPreProcessor);
     }
     
     /**
-     * Test correct PostProcessor
+     * Test correct PostProcessors
      */
-    public void testCorrectPostProcessor()
+    @Test
+    public void testCorrectPostProcessors()
     {
-    	assertEquals ("Wrong postprocessor!", "edu.leipzig.sedri.test.TestPostprocessor", endpoints.get(0).getPostprocessors().getPostprocessor().get(0).toString());
-    	assertEquals ("Wrong postprocessor!", "edu.leipzig.sedri.test.TestPostprocessor", endpoints.get(2).getPostprocessors().getPostprocessor().get(0).toString());
-    	assertEquals ("Wrong postprocessor!", "edu.leipzig.sedri.test.TestPostprocessor", endpoints.get(4).getPostprocessors().getPostprocessor().get(0).toString());
-    	assertEquals ("Wrong postprocessor!", "edu.leipzig.sedri.test.WrongTestPostprocessor", endpoints.get(4).getPostprocessors().getPostprocessor().get(1).toString());
+        boolean firstPostProcessor = false;
+        boolean secondPostProcessor = false;
+        boolean thirdPostProcessor = false;
+        boolean fourthPostProcessor = false;
+
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getPostprocessors()) {
+                Iterator<String> postProcessorsIt = endpoint.getPostprocessors().getPostprocessor().iterator();
+                while (postProcessorsIt.hasNext()) {
+                    String postProcessor = postProcessorsIt.next();
+                    if (postProcessor.equals("edu.leipzig.sedri.test.WrongTestPostprocessor") && !fourthPostProcessor) {
+                        fourthPostProcessor = true;
+                    } else if (postProcessor.equals("edu.leipzig.sedri.test.TestPostprocessor") && !thirdPostProcessor) {
+                        thirdPostProcessor = true;
+                    } else if (postProcessor.equals("edu.leipzig.sedri.test.TestPostprocessor") && !secondPostProcessor) {
+                        secondPostProcessor = true;
+                    } else if (postProcessor.equals("edu.leipzig.sedri.test.TestPostprocessor") && !firstPostProcessor) {
+                        firstPostProcessor = true;
+                    }
+                }
+            }
+        }
+        assertTrue("Wrong PostProcessor! Correct on is edu.leipzig.sedri.test.TestPostprocessor", firstPostProcessor);
+        assertTrue("Wrong PostProcessor! Correct on is edu.leipzig.sedri.test.TestPostprocessor", secondPostProcessor);
+        assertTrue("Wrong PostProcessor! Correct on is edu.leipzig.sedri.test.TestPostprocessor", thirdPostProcessor);
+        assertTrue("Wrong PostProcessor! Correct on is edu.leipzig.sedri.test.WrongTestPostprocessor", fourthPostProcessor);
     }
     
     /**
@@ -237,11 +355,15 @@ public abstract class ServerTest {
     @Test
     public void testCorrectSourcesCount()
     {
-    	assertEquals ("Wrong sources count!", 2, endpoints.get(0).getSources().getSource().size());
-    	assertEquals ("Wrong sources count!", 1, endpoints.get(1).getSources().getSource().size());
-    	assertEquals ("Wrong sources count!", 0, endpoints.get(2).getSources().getSource().size());
-    	assertEquals ("Wrong sources count!", null, endpoints.get(3).getSources());
-    	assertEquals ("Wrong sources count!", 2, endpoints.get(4).getSources().getSource().size());
+        int sourcesCount = 0;
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getSources()) {
+                sourcesCount += endpoint.getSources().getSource().size();
+            }
+        }
+        assertEquals("Wrong count of params!", 5, sourcesCount);
     }
     
     /**
@@ -250,23 +372,78 @@ public abstract class ServerTest {
     @Test
     public void testCorrectSourcesUrls()
     {
-    	assertEquals ("Wrong sources url!", "http://dbpedia.org/sparql", endpoints.get(0).getSources().getSource().get(0).getUrl());
-    	assertEquals ("Wrong sources url!", "http://drugbank.bio2rdf.org/sparql", endpoints.get(0).getSources().getSource().get(1).getUrl());
-    	assertEquals ("Wrong sources url!", "http://drugbank.bio2rdf.org/sparql", endpoints.get(1).getSources().getSource().get(0).getUrl());
-    	assertEquals ("Wrong sources url!", null, endpoints.get(4).getSources().getSource().get(0).getUrl());
-    	assertEquals ("Wrong sources url!", null, endpoints.get(4).getSources().getSource().get(1).getUrl());
+        boolean firstSourceUrl = false;
+        boolean secondSourceUrl = false;
+        boolean thirdSourceUrl = false;
+        boolean fourthSourceUrl = false;
+        boolean fifthSourceUrl = false;
+
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getSources()) {
+                Iterator<Sources.Source> sourceUrlsIt = endpoint.getSources().getSource().iterator();
+                while (sourceUrlsIt.hasNext()) {
+                    String sourceUrl = sourceUrlsIt.next().getUrl();
+                    if (null == sourceUrl && !fifthSourceUrl) {
+                        fifthSourceUrl = true;
+                    } else if (null == sourceUrl && !fourthSourceUrl) {
+                        fourthSourceUrl = true;
+                    } else if (sourceUrl.equals("http://drugbank.bio2rdf.org/sparql") && !thirdSourceUrl) {
+                        thirdSourceUrl = true;
+                    } else if (sourceUrl.equals("http://drugbank.bio2rdf.org/sparql") && !secondSourceUrl) {
+                        secondSourceUrl = true;
+                    } else if (sourceUrl.equals("http://dbpedia.org/sparql") && !firstSourceUrl) {
+                        firstSourceUrl = true;
+                    }
+                }
+            }
+        }
+        assertTrue("Wrong sources url! Correct on is http://dbpedia.org/sparql", firstSourceUrl);
+        assertTrue("Wrong sources url! Correct on is http://drugbank.bio2rdf.org/sparql", secondSourceUrl);
+        assertTrue("Wrong sources url! Correct on is http://drugbank.bio2rdf.org/sparql", thirdSourceUrl);
+        assertTrue("Wrong sources url! Correct on is 'null'", fourthSourceUrl);
+        assertTrue("Wrong sources url! Correct on is 'null'", fifthSourceUrl);
     }
-    
+
     /**
      * Test correct Sources queries
      */
     @Test
     public void testCorrectSourcesQueries()
     {
-    	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://dbpedia.org/ontology/$class>. FILTER regex(?s, \"Methylfentanyl\")} order by ?s limit 1", endpoints.get(0).getSources().getSource().get(0).getQuery());
-    	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1", endpoints.get(0).getSources().getSource().get(1).getQuery());
-    	assertEquals ("Wrong sources query!", null, endpoints.get(1).getSources().getSource().get(0).getQuery());
-    	assertEquals ("Wrong sources query!", "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} limit $testLimit", endpoints.get(4).getSources().getSource().get(1).getQuery());
+        boolean firstSourceQuery = false;
+        boolean secondSourceQuery = false;
+        boolean thirdSourceQuery = false;
+        boolean fourthSourceQuery = false;
+        boolean fifthSourceQuery = false;
+
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getSources()) {
+                Iterator<Sources.Source> sourceQueriesIt = endpoint.getSources().getSource().iterator();
+                while (sourceQueriesIt.hasNext()) {
+                    String sourceQuery = sourceQueriesIt.next().getQuery();
+                    if (null == sourceQuery && !fifthSourceQuery) {
+                        fifthSourceQuery = true;
+                    } else if (null == sourceQuery && !thirdSourceQuery) {
+                        thirdSourceQuery = true;
+                    } else if (sourceQuery.equals("select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} limit $testLimit") && !fourthSourceQuery) {
+                        fourthSourceQuery = true;
+                    } else if (sourceQuery.equals("select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1") && !secondSourceQuery) {
+                        secondSourceQuery = true;
+                    } else if (sourceQuery.equals("select ?s where {?s a <http://dbpedia.org/ontology/$class>. FILTER regex(?s, \"Methylfentanyl\")} order by ?s limit 1") && !firstSourceQuery) {
+                        firstSourceQuery = true;
+                    }
+                }
+            }
+        }
+        assertTrue("Wrong sources query! Correct on is select ?s where {?s a <http://dbpedia.org/ontology/$class>. FILTER regex(?s, \"Methylfentanyl\")} order by ?s limit 1", firstSourceQuery);
+        assertTrue("Wrong sources query! Correct on is select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1", secondSourceQuery);
+        assertTrue("Wrong sources query! Correct on is 'null'", thirdSourceQuery);
+        assertTrue("Wrong sources query! Correct on is select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} limit $testLimit", fourthSourceQuery);
+        assertTrue("Wrong sources query! Correct on is 'null'", fifthSourceQuery);
     }
     
     /**
@@ -275,10 +452,38 @@ public abstract class ServerTest {
     @Test
     public void testCorrectFormat()
     {
-    	assertEquals ("Wrong format!", "RDF/XML", endpoints.get(0).getFormat());
-    	assertEquals ("Wrong format!", "JSON-LD", endpoints.get(1).getFormat());
-    	assertEquals ("Wrong format!", "", endpoints.get(2).getFormat());
-    	assertEquals ("Wrong format!", "N-TRIPLE", endpoints.get(3).getFormat());
-    	assertEquals ("Wrong format!", null, endpoints.get(4).getFormat());
+        boolean firstFormat = false;
+        boolean secondFormat = false;
+        boolean thirdFormat = false;
+        boolean fourthFormat = false;
+        boolean fifthFormat = false;
+
+        Iterator<Endpoint> endpointIt = endpoints.iterator();
+        while (endpointIt.hasNext()) {
+            Endpoint endpoint = endpointIt.next();
+            if (null != endpoint.getFormat()) {
+                String format = endpoint.getFormat();
+                if (format.equals("N-TRIPLE") && !fourthFormat) {
+                    fourthFormat = true;
+                } else if (format.equals("JSON-LD") && !secondFormat) {
+                    secondFormat = true;
+                } else if (format.equals("RDF/XML") && !firstFormat) {
+                    firstFormat = true;
+                } else if (format.equals("") && !thirdFormat) {
+                    thirdFormat = true;
+                }
+            } else {
+                if (!thirdFormat) {
+                    thirdFormat = true;
+                } else if (!fifthFormat) {
+                    fifthFormat = true;
+                }
+            }
+        }
+        assertTrue("Wrong format! Correct on is RDF/XML", firstFormat);
+        assertTrue("Wrong format! Correct on is JSON-LD", secondFormat);
+        assertTrue("Wrong format! Correct on is '' or null", thirdFormat);
+        assertTrue("Wrong format! Correct on is N-TRIPLE", fourthFormat);
+        assertTrue("Wrong format! Correct on is null", fifthFormat);
     }
 }

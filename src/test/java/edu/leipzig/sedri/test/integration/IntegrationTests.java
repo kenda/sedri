@@ -10,7 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-        ServerXMLTest.class
+        ServerXMLTest.class,
+        ServerRDFTest.class
 })
 public class IntegrationTests {
 

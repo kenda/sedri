@@ -24,11 +24,11 @@
 
 :source1 rdf:type sedri:Source ;
          sedri:sourceURL "http://dbpedia.org/sparql"^^xsd:string ;
-         sedri:sparqlQuery "select ?s where {?s a &lt;http://dbpedia.org/ontology/$class&gt;} order by ?s limit 1"^^xsd:string .
+         sedri:sparqlQuery "select ?s where {?s a <http://dbpedia.org/ontology/$class>. FILTER regex(?s, \"Methylfentanyl\")} order by ?s limit 1"^^xsd:string .
 
 :source2 rdf:type sedri:Source ;
          sedri:sourceURL "http://drugbank.bio2rdf.org/sparql"^^xsd:string ;
-         sedri:sparqlQuery "select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} order by ?s limit 1"^^xsd:string .
+         sedri:sparqlQuery "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1"^^xsd:string .
 
 #################################################################
 #

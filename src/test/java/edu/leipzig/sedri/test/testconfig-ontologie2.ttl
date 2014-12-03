@@ -33,4 +33,4 @@
 :source4 rdf:type sedri:Source .
 
 :source5 rdf:type sedri:Source ;
-		 sedri:sparqlQuery "select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} limit $testLimit"^^xsd:string .
+		 sedri:sparqlQuery "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} limit $testLimit"^^xsd:string .
