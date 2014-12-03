@@ -2,37 +2,35 @@
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix sedri: <http://sedri.de/vocab/> .
-@base <urn:uuid:testconfig03> .
+@base <urn:uuid:testconfig02> .
 
 #################################################################
 #
-#    Webserver4 corresponding testconfig4.xml
+#    Webserver3 corresponding testconfig3.xml
 #
 #################################################################
 
-:Webservice4 rdf:type sedri:Webservice ;
-             sedri:portNumber 1234 ;
-             sedri:nodes :SPARQLNode6 , :SPARQLNode7.
+:Webservice3 rdf:type sedri:Webservice ;
+             sedri:portNumber 9876 ;
+             sedri:nodes :SPARQLNode4 , :SPARQLNode5 .
 
-:SPARQLNode6 sedri:SPARQLNode ;
-             sedri:url-path "/test1"^^xsd:string ;
+:SPARQLNode4 rdf:type sedri:SPARQLNode ;
+             sedri:url-path ""^^xsd:string ;
+             sedri:resultFormat "TURTLE"^^xsd:string ;
+             sedri:resultFormat "N-TRIPLE"^^xsd:string ;
+             sedri:param ""^^xsd:string ;
+             sedri:preprocessor ""^^xsd:string .
+
+:SPARQLNode5 rdf:type sedri:SPARQLNode ;
              sedri:param "testLimit"^^xsd:string ;
-             sedri:resultFormat "JSON-LD"^^xsd:string ;
-             sedri:preprocessor ""^^xsd:string ;
-             sedri:sources :source6 , :source7 .
+             sedri:param "testOrder"^^xsd:string ;
+             sedri:preprocessor "edu.leipzig.sedri.test.TestPreprocessor"^^xsd:string ;
+             sedri:preprocessor "edu.leipzig.sedri.test.WrongTestPreprocessor"^^xsd:string ;
+             sedri:postprocessor "edu.leipzig.sedri.test.TestPostprocessor"^^xsd:string ;
+             sedri:postprocessor "edu.leipzig.sedri.test.WrongTestPostprocessor"^^xsd:string ;
+             sedri:sources :source4 , :source5 .
+             
+:source4 rdf:type sedri:Source .
 
-:SPARQLNode7 rdf:type sedri:SPARQLNode ;
-             sedri:url-path "/test2"^^xsd:string ;
-             sedri:param "testLimit"^^xsd:string ;
-             sedri:resultFormat "JSON-LD"^^xsd:string 
-             sedri:preprocessor "edu.leipzig.sedri.TestPreprocessor"^^xsd:string ;
-             sedri:postprocessor "edu.leipzig.sedri.TestPostprocessor"^^xsd:string ;
-             sedri:sources :source6 , :source7 .
-
-:source6 rdf:type sedri:Source ;
-         sedri:sourceURL "http://dbpedia.org/sparql"^^xsd:string ;
-         sedri:sparqlQuery "select ?s where {?s a &lt;http://dbpedia.org/ontology/Drug&gt;} limit $testLimit"^^xsd:string .
-
-:source7 rdf:type sedri:Source ;
-         sedri:sourceURL "http://drugbank.bio2rdf.org/sparql"^^xsd:string ;
-         sedri:sparqlQuery "select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} limit $testLimit"^^xsd:string .
+:source5 rdf:type sedri:Source ;
+		 sedri:sparqlQuery "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} limit $testLimit"^^xsd:string .

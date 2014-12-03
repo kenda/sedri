@@ -13,7 +13,8 @@ public class ServerRDFTest
     {
     	super.fileType = "rdf";
     	super.configFiles.add("../testconfig-ontologie1.ttl");
-    	super.configFiles.add("../testconfig-ontologie2.ttl");
-    	super.wrongConfigFile = "../testconfig-ontologie3.ttl";
+        super.configFiles.add("../testconfig-ontologie2.ttl");
+        super.configFiles.add("../testconfig-ontologie3.ttl");
+    	super.wrongConfigFile = "../testconfig-ontologie4.ttl";
     }
 }
