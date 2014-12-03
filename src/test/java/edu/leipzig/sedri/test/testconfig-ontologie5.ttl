@@ -1,0 +1,86 @@
+@prefix : <urn:uuid:testconfig05#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix sedri: <http://sedri.de/vocab/> .
+@base <urn:uuid:testconfig05> .
+
+#################################################################
+#
+#    Webserver5 corresponding testconfig5.xml
+#
+#################################################################
+
+:Webservice5 rdf:type sedri:Webservice ;
+             sedri:portNumber 9876 ;
+             sedri:nodes :SPARQLNode8, :SPARQLNode9, :SPARQLNode10, :SPARQLNode11, :SPARQLNode12 .
+
+:SPARQLNode8 rdf:type sedri:SPARQLNode ;
+             sedri:url-path "/test1"^^xsd:string ;
+             sedri:resultFormat "RDF/XML"^^xsd:string ;
+             sedri:param "class"^^xsd:string ;
+             sedri:postprocessor "edu.leipzig.sedri.test.TestPostprocessor"^^xsd:string ;
+             sedri:preprocessor "edu.leipzig.sedri.test.WrongTestPreprocessor"^^xsd:string ;
+             sedri:sources :SPARQLNode8Source1, :SPARQLNode8Source2 .
+
+:SPARQLNode8Source1 rdf:type sedri:Source ;
+         sedri:sourceURL "http://dbpedia.org/sparql"^^xsd:string ;
+         sedri:sparqlQuery "select ?s where {?s a <http://dbpedia.org/ontology/$class>} order by ?s limit 1"^^xsd:string .
+
+:SPARQLNode8Source2 rdf:type sedri:Source ;
+         sedri:sourceURL "http://drugbank.bio2rdf.org/sparql"^^xsd:string ;
+         sedri:sparqlQuery "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1"^^xsd:string .
+
+
+:SPARQLNode9 rdf:type sedri:SPARQLNode ;
+             sedri:url-path "/test2"^^xsd:string ;
+             sedri:resultFormat "RDF/XML"^^xsd:string ;
+             sedri:param "class"^^xsd:string ;
+             sedri:postprocessor "edu.leipzig.sedri.test.WrongTestPostprocessor"^^xsd:string ;
+             sedri:preprocessor "edu.leipzig.sedri.test.TestPreprocessor"^^xsd:string ;
+             sedri:sources :SPARQLNode9Source1, :SPARQLNode9Source2 .
+
+:SPARQLNode9Source1 rdf:type sedri:Source ;
+         sedri:sourceURL "http://dbpedia.org/sparql"^^xsd:string ;
+         sedri:sparqlQuery "select ?s where {?s a <http://dbpedia.org/ontology/$class>} order by ?s limit 1"^^xsd:string .
+
+:SPARQLNode9Source2 rdf:type sedri:Source ;
+         sedri:sourceURL "http://drugbank.bio2rdf.org/sparql"^^xsd:string ;
+         sedri:sparqlQuery "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1"^^xsd:string .
+
+
+:SPARQLNode10 rdf:type sedri:SPARQLNode ;
+             sedri:url-path "/test3"^^xsd:string ;
+             sedri:resultFormat "RDF/XML"^^xsd:string ;
+             sedri:param "class"^^xsd:string ;
+             sedri:sources :SPARQLNode9Source1 , :SPARQLNode9Source2 .
+
+
+:SPARQLNode11 rdf:type sedri:SPARQLNode ;
+             sedri:url-path "/test4"^^xsd:string ;
+             sedri:resultFormat "RDF/XML"^^xsd:string ;
+             sedri:param "class"^^xsd:string ;
+             sedri:sources :SPARQLNode11Source1 , :SPARQLNode11Source2 .
+
+:SPARQLNode11Source1 rdf:type sedri:Source ;
+         sedri:sourceURL "http://dbpedia.org/sparql"^^xsd:string ;
+         sedri:sparqlQuery "DESCRIBE <http://dbpedia.org/ontology/$class>"^^xsd:string .
+
+:SPARQLNode11Source2 rdf:type sedri:Source ;
+         sedri:sourceURL "http://drugbank.bio2rdf.org/sparql"^^xsd:string ;
+         sedri:sparqlQuery "select ?s where {?s a <http://bio2rdf.org/drugbank_vocabulary:Drug>} order by ?s limit 1"^^xsd:string .
+
+
+:SPARQLNode12 rdf:type sedri:SPARQLNode ;
+             sedri:url-path "/test5"^^xsd:string ;
+             sedri:resultFormat "RDF/XML"^^xsd:string ;
+             sedri:param "class1"^^xsd:string ;
+             sedri:param "class2"^^xsd:string ;
+             sedri:sources :SPARQLNode12Source1 , :SPARQLNode12Source2 .
+
+:SPARQLNode12Source1 rdf:type sedri:Source ;
+         sedri:sourceURL "http://dbpedia.org/sparql"^^xsd:string ;
+         sedri:sparqlQuery "DESCRIBE <http://dbpedia.org/ontology/$class1>"^^xsd:string .
+
+:SPARQLNode12Source2 rdf:type sedri:Source ;
+         sedri:sourceURL "http://drugbank.bio2rdf.org/sparql"^^xsd:string ;
+         sedri:sparqlQuery "DESCRIBE <http://bio2rdf.org/drugbank_vocabulary:$class2>"^^xsd:string .

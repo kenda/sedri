@@ -10,7 +10,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-        WebserviceXMLTest.class
+        WebserviceXMLTest.class,
+        WebserviceRDFTest.class
 })
 public class SystemTests {
 
