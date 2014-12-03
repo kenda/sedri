@@ -212,7 +212,7 @@ public abstract class WebserviceTest
      * Test Webservice with one correct and one wrong DESCRIBE query
      */
     @Test
-    public void testWebServiceCorractAndWrongDescribeQuery() throws Exception
+    public void testWebServiceCorrectAndWrongDescribeQuery() throws Exception
     {
     	Model model = ModelFactory.createDefaultModel();
     	model.getReader().read(model, "http://localhost:9876/test5?class1=Drug&class2=D1r2u3g");

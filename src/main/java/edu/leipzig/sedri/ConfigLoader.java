@@ -46,7 +46,6 @@ public class ConfigLoader {
 		} else {
 			returnValue = new ArrayList<Server>();
 		}
-
 		return returnValue;
 	}
 	

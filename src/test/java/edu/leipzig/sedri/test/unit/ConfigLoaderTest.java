@@ -34,7 +34,7 @@ public class ConfigLoaderTest
      */
     @Test
 	public void testLoadCorrectRDF() throws URISyntaxException {
-		URL resourceUrl = getClass(). getResource("../testconfig-ontologie.ttl");
+		URL resourceUrl = getClass(). getResource("../testconfig-ontologie1.ttl");
     	assertNotNull("Test file missing", resourceUrl);
 		File testConfig = Paths.get(resourceUrl.toURI()).toFile();
 		

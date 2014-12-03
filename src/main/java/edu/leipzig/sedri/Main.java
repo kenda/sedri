@@ -21,7 +21,6 @@ public class Main {
     	String filetype = standardFiletype;
     	File configFile = new File(standardConfigFile);
     	
-    	
     	// parse args
     	CommandLine commandLine;
     	Option option_t = OptionBuilder.withArgName("opt1").hasArg().withDescription("The t option").create("t");

@@ -4,6 +4,12 @@
 @prefix sedri: <http://sedri.de/vocab/> .
 @base <urn:uuid:testconfig01> .
 
+#################################################################
+#
+#    Webserver1 corresponding testconfig1.xml
+#
+#################################################################
+
 :Webservice1 rdf:type sedri:Webservice ;
              sedri:portNumber 1234 ;
              sedri:nodes :SPARQLNode1 .
@@ -23,3 +29,29 @@
 :source2 rdf:type sedri:Source ;
          sedri:sourceURL "http://drugbank.bio2rdf.org/sparql"^^xsd:string ;
          sedri:sparqlQuery "select ?s where {?s a &lt;http://bio2rdf.org/drugbank_vocabulary:Drug&gt;} order by ?s limit 1"^^xsd:string .
+
+#################################################################
+#
+#    Webserver2 corresponding testconfig2.xml
+#
+#################################################################
+
+:Webservice2 rdf:type sedri:Webservice ;
+             sedri:portNumber 5678 ;
+             sedri:nodes :SPARQLNode2 , :SPARQLNode3 .
+
+:SPARQLNode2 rdf:type sedri:SPARQLNode ;
+             sedri:url-path "/test1"^^xsd:string ;
+             sedri:resultFormat "JSON-LD"^^xsd:string ;
+             sedri:preprocessor "edu.leipzig.sedri.test.TestPreprocessor"^^xsd:string ;
+             sedri:sources :source3 .
+
+:source3 rdf:type sedri:Source ;
+		 sedri:sourceURL "http://drugbank.bio2rdf.org/sparql"^^xsd:string .
+
+:SPARQLNode3 rdf:type sedri:SPARQLNode ;
+             sedri:url-path "/test2/test3"^^xsd:string ;
+             sedri:resultFormat ""^^xsd:string ;
+             sedri:param "testLimit"^^xsd:string ;
+             sedri:param "testLimit"^^xsd:string ;
+             sedri:postprocessor "edu.leipzig.sedri.test.TestPostprocessor"^^xsd:string .
