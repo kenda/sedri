@@ -1,0 +1,70 @@
+<html lang="en">
+    <head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>SEDRI web</title>
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+	
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+	
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+	<div class="page-header">
+	    <h1>SEDRI <small>Framework for aggregating several SPARQL endpoints and serving the results as web interface.</small></h1>
+	</div>
+	<div class="container">
+	    <h2>Available endpoints:</h2>
+	    #foreach( $endpoint in $endpoints )
+	    <div class="panel panel-default">
+		<div class="panel-heading">
+		    <h2 class="panel-title">$endpoint.getUrl()</h2>
+		</div>
+		<div class="panel-body">
+		    <div class="row">
+			<div class="col-md-4">
+			    <h4>Parameters:</h4>
+			    <ul>
+				#foreach ( $param in $endpoint.getParams().getParam() )
+				<li><samp>$param</samp></li>
+				#end
+			    </ul>
+			</div>
+			<div class="col-md-4">
+			    <h4>Preprocessors:</h4>
+			    <ul>
+				#foreach ( $prep in $endpoint.getPreprocessors().getPreprocessor() )
+				<li><samp>$prep</samp></li>
+				#end
+			    </ul>			    
+			</div>
+			<div class="col-md-4">
+			    <h4>Postprocessors:</h4>
+			    <ul>
+				#foreach ( $postp in $endpoint.getPostprocessors().getPostprocessor() )
+				<li><samp>$postp</samp></li>
+				#end
+			    </ul>
+			</div>
+		    </div>
+		</div>
+		<div class="panel-footer">Queries
+		    <ul class="list-group">
+			#foreach ( $source in $endpoint.getSources().getSource() )
+			<li class="list-group-item">
+			    <h4>$source.getUrl()</h4>
+			    <samp>$esc.html($source.getQuery())</samp>
+			</li>
+			#end
+		    </ul>		    
+		</div>
+	    </div>
+	    #end
+	</div>
+    </body>
+</html>

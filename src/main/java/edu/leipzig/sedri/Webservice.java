@@ -8,6 +8,14 @@ import java.util.List;
 import java.lang.Class;
 import java.lang.reflect.Method;
 
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.Template;
+import org.apache.velocity.app.Velocity;
+import org.apache.velocity.exception.ResourceNotFoundException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.tools.ToolManager;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,126 +44,165 @@ public class Webservice extends AbstractHandler{
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) 
         throws IOException, ServletException
     {
-	for( Endpoint endpoint : this.endpoints ){
-	    String url = endpoint.getUrl();
+	if (target.equals("/")){
+	    Velocity.init();
+	    ToolManager velocityToolManager = new ToolManager();
+	    velocityToolManager.configure("velocity-tools.xml");
+	    VelocityContext context = new VelocityContext(velocityToolManager.createContext());
 
-	    if (url.equals(target)){
+	    context.put( "endpoints", this.endpoints );
 
-		Hashtable<String, String> paramTable = new Hashtable<String, String>();
-		QueryProcessor queryProcessor = new QueryProcessor();
-
-		// get parameter values
-		if (endpoint.getParams() != null){
-		    Params params = (Params) endpoint.getParams();
-		    for ( String param : params.getParam() ){
-			paramTable.put(param, request.getParameter(param));
-		    }
+	    Template template = null;
+	    // TODO
+	    try
+		{
+		    template = Velocity.getTemplate("index.html");
 		}
-
-		// execute preprocessors
-		Preprocessors preprocessors = endpoint.getPreprocessors();
-		if (preprocessors != null){
-		    for (String classname : preprocessors.getPreprocessor()){
-			try{
-			    Class cl = Class.forName(classname);
-			    Object o = cl.getConstructor().newInstance();
-			    Method m = cl.getMethod("process", Hashtable.class);
-			    paramTable = (Hashtable<String,String>) m.invoke(o, paramTable);
-			}
-			catch (ClassNotFoundException cnfe){
-			    System.out.println("Failed loading Preprocessor!");
-			}
-			catch (Exception e)
-			    {System.out.println(e);}
-		    }
+	    catch( ResourceNotFoundException rnfe )
+		{
+		    // couldn't find the template
 		}
+	    catch( ParseErrorException pee )
+		{
+		    // syntax error: problem parsing the template
+		}
+	    catch( MethodInvocationException mie )
+		{
+		    // something invoked in the template
+		    // threw an exception
+		}
+	    catch( Exception e )
+		{}
+
+	    response.setContentType("text/html;charset=utf-8");
+	    baseRequest.setHandled(true);
+	    response.setStatus(HttpServletResponse.SC_OK);
+	    template.merge( context, response.getWriter() );
+
+	    return;
+	}
+	else {	
+	    for( Endpoint endpoint : this.endpoints ){
+		String url = endpoint.getUrl();
+
+		if (url.equals(target)){
+
+		    Hashtable<String, String> paramTable = new Hashtable<String, String>();
+		    QueryProcessor queryProcessor = new QueryProcessor();
+
+		    // get parameter values
+		    if (endpoint.getParams() != null){
+			Params params = (Params) endpoint.getParams();
+			for ( String param : params.getParam() ){
+			    paramTable.put(param, request.getParameter(param));
+			}
+		    }
+
+		    // execute preprocessors
+		    Preprocessors preprocessors = endpoint.getPreprocessors();
+		    if (preprocessors != null){
+			for (String classname : preprocessors.getPreprocessor()){
+			    try{
+				Class cl = Class.forName(classname);
+				Object o = cl.getConstructor().newInstance();
+				Method m = cl.getMethod("process", Hashtable.class);
+				paramTable = (Hashtable<String,String>) m.invoke(o, paramTable);
+			    }
+			    catch (ClassNotFoundException cnfe){
+				System.out.println("Failed loading Preprocessor!");
+			    }
+			    catch (Exception e)
+				{System.out.println(e);}
+			}
+		    }
 		
-		Sources sources = (Sources) endpoint.getSources();
+		    Sources sources = (Sources) endpoint.getSources();
 
-		// check if all queries have compatible query types
-		boolean isSelect = QueryFactory.create(sources.getSource().get(0).getQuery()).isSelectType();
-		if (isSelect == true){
-		    // all queries have to be SELECT queries
-		    for( int i = 1; i < sources.getSource().size(); i++ ){
-			if (QueryFactory.create(sources.getSource().get(i).getQuery()).isSelectType() == false){
-			    System.out.println("Incompatible query types");
-			    throw new QueryException("Incompatible query types");
+		    // check if all queries have compatible query types
+		    boolean isSelect = QueryFactory.create(sources.getSource().get(0).getQuery()).isSelectType();
+		    if (isSelect == true){
+			// all queries have to be SELECT queries
+			for( int i = 1; i < sources.getSource().size(); i++ ){
+			    if (QueryFactory.create(sources.getSource().get(i).getQuery()).isSelectType() == false){
+				System.out.println("Incompatible query types");
+				throw new QueryException("Incompatible query types");
+			    }
 			}
 		    }
-		}
-		else {
-		    // all queries have to be CONSTRUCT or DESCRIBE queries
-		    for( int i = 1; i < sources.getSource().size(); i++ ){
-			if ( (QueryFactory.create(sources.getSource().get(i).getQuery()).isConstructType() == false) &&
-			     (QueryFactory.create(sources.getSource().get(i).getQuery()).isDescribeType() == false)) {
-			    System.out.println("Incompatible query types");
-			    throw new QueryException("Incompatible query types");
+		    else {
+			// all queries have to be CONSTRUCT or DESCRIBE queries
+			for( int i = 1; i < sources.getSource().size(); i++ ){
+			    if ( (QueryFactory.create(sources.getSource().get(i).getQuery()).isConstructType() == false) &&
+				 (QueryFactory.create(sources.getSource().get(i).getQuery()).isDescribeType() == false)) {
+				System.out.println("Incompatible query types");
+				throw new QueryException("Incompatible query types");
+			    }
 			}
 		    }
-		}
 
-		Model model = ModelFactory.createDefaultModel();
+		    Model model = ModelFactory.createDefaultModel();
 
-		// query the given sources
-		for ( Sources.Source source : sources.getSource() ){
-		    model.add(queryProcessor.process(source.getUrl(),
-						     source.getQuery(),
-						     paramTable));
-		}
-
-		// execute postprocessors
-		Postprocessors postprocessors = endpoint.getPostprocessors();
-		if (postprocessors != null){
-		    for (String classname : postprocessors.getPostprocessor()){
-			try{
-			    Class cl = Class.forName(classname);
-			    Object o = cl.getConstructor().newInstance();
-			    Method m = cl.getMethod("process", Model.class);
-			    model = (Model) m.invoke(o, model);
-			}
-			catch (ClassNotFoundException cnfe){
-			    System.out.println("Failed loading Postprocessor!");
-			}
-			catch (Exception e)
-			    {System.out.println(e);}
+		    // query the given sources
+		    for ( Sources.Source source : sources.getSource() ){
+			model.add(queryProcessor.process(source.getUrl(),
+							 source.getQuery(),
+							 paramTable));
 		    }
-		}
 
-		// output the model in the given format
-		String accept = request.getHeader("accept");
-		String format = endpoint.getFormat();
-		if (accept.equals("text/turtle")){
-		    format = "TURTLE";
-		    response.setContentType("text/turtle;charset=utf-8");
-		}
-		else if (accept.equals("text/plain")){
-		    format = "N-TRIPLE";
-		    response.setContentType("text/plain;charset=utf-8");
-		}
-		else if (accept.equals("application/rdf+xml")){
-		    format = "RDF/XML";
-		    response.setContentType("application/rdf+xml;charset=utf-8");
-		}
-		else if (accept.equals("application/ld+json")){
-		    format = "JSON-LD";
-		    response.setContentType("application/ld+json;charset=utf-8");
-		}
+		    // execute postprocessors
+		    Postprocessors postprocessors = endpoint.getPostprocessors();
+		    if (postprocessors != null){
+			for (String classname : postprocessors.getPostprocessor()){
+			    try{
+				Class cl = Class.forName(classname);
+				Object o = cl.getConstructor().newInstance();
+				Method m = cl.getMethod("process", Model.class);
+				model = (Model) m.invoke(o, model);
+			    }
+			    catch (ClassNotFoundException cnfe){
+				System.out.println("Failed loading Postprocessor!");
+			    }
+			    catch (Exception e)
+				{System.out.println(e);}
+			}
+		    }
 
-		JenaJSONLD.init();
-		StringWriter output = new StringWriter();
-		model.write(output, format);
+		    // output the model in the given format
+		    String accept = request.getHeader("accept");
+		    String format = endpoint.getFormat();
+		    if (accept.equals("text/turtle")){
+			format = "TURTLE";
+			response.setContentType("text/turtle;charset=utf-8");
+		    }
+		    else if (accept.equals("text/plain")){
+			format = "N-TRIPLE";
+			response.setContentType("text/plain;charset=utf-8");
+		    }
+		    else if (accept.equals("application/rdf+xml")){
+			format = "RDF/XML";
+			response.setContentType("application/rdf+xml;charset=utf-8");
+		    }
+		    else if (accept.equals("application/ld+json")){
+			format = "JSON-LD";
+			response.setContentType("application/ld+json;charset=utf-8");
+		    }
+
+		    JenaJSONLD.init();
+		    StringWriter output = new StringWriter();
+		    model.write(output, format);
 		
-		response.setStatus(HttpServletResponse.SC_OK);
-		baseRequest.setHandled(true);
-		response.getWriter().println(output.toString());
+		    response.setStatus(HttpServletResponse.SC_OK);
+		    baseRequest.setHandled(true);
+		    response.getWriter().println(output.toString());
 
-		break;
-	    }
-	    else{
-		// Not found
-		response.setContentType("text/html;charset=utf-8");
-		response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-		baseRequest.setHandled(true);
+		    break;
+		}
+		else{
+		    // Not found
+		    response.setContentType("text/html;charset=utf-8");
+		    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		    baseRequest.setHandled(true);
+		}
 	    }
 	}
     }
