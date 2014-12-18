@@ -168,6 +168,7 @@ public class Webservice extends AbstractHandler{
 		    }
 
 		    // output the model in the given format
+		    // TODO parse the accept header correctly
 		    String accept = request.getHeader("accept");
 		    String format = endpoint.getFormat();
 		    if (accept.equals("text/turtle")){

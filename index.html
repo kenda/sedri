@@ -5,14 +5,48 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>SEDRI web</title>
 	
-	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-	
-	<!-- Optional theme -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
 	
-	<!-- Latest compiled and minified JavaScript -->
+	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript">
+	 function run_request(event, endpoint){
+	     event.preventDefault();
+	     var url = endpoint + "?";
+	     $("form#run-\\"+endpoint+" input").each(function(){
+		 url += $(this).attr("name") + "=" + $(this).val() + "&";
+	     });
+	      
+	     var format = $("form#run-\\"+endpoint+" select").val();
+	      
+	     accept = {
+		 'RDF/XML': 'application/rdf+xml',
+		 'TURTLE' : 'text/turtle',
+		 'N-TRIPLES': 'text/plain',
+		 'JSON-LD': 'application/ld+json'}
+	      
+	     $.ajax(
+		 url, {
+		     dataType: 'text',
+		     headers: {'Accept': accept[format]},
+		     success: function(data){
+			 $("textarea#output-\\"+endpoint).text(data);
+		     }
+		 }
+	     );
+	 };
+	  
+	 $(document).ready(function(){
+	     $(".details").hide();
+	     $("a.more").click(function(event){
+		 event.preventDefault();
+		 $("div#more-\\"+$(this).attr("id")).slideToggle();
+	     });
+	 });
+	</script>
     </head>
     <body>
 	<div class="page-header">
@@ -24,6 +58,7 @@
 	    <div class="panel panel-default">
 		<div class="panel-heading">
 		    <h2 class="panel-title">$endpoint.getUrl()</h2>
+		    <!--<small>$description</small>-->
 		</div>
 		<div class="panel-body">
 		    <div class="row">
@@ -53,15 +88,44 @@
 			</div>
 		    </div>
 		</div>
-		<div class="panel-footer">Queries
-		    <ul class="list-group">
-			#foreach ( $source in $endpoint.getSources().getSource() )
-			<li class="list-group-item">
-			    <h4>$source.getUrl()</h4>
-			    <samp>$esc.html($source.getQuery())</samp>
-			</li>
-			#end
-		    </ul>		    
+		<div class="panel-footer">
+		    <a href="#" class="more" id="$endpoint.getUrl()"><span class="caret"></span> Details</a>
+		    <div class="row details" id="more-$endpoint.getUrl()">
+			<div class="col-md-6">
+			    <h4>Configured Queries:</h4>
+			    <ul class="list-group">
+				#foreach ( $source in $endpoint.getSources().getSource() )
+				<li class="list-group-item">
+				    <strong>$source.getUrl()</strong><br/>
+				    <samp>$esc.html($source.getQuery())</samp>
+				</li>
+				#end
+			    </ul>		    
+			</div>
+			<div class="col-md-6">
+			    <h4>Run Query:</h4>
+			    <form role="form" id="run-$endpoint.getUrl()">
+				<div class="row">
+				    <div class="form-horizontal form-group col-md-6">
+					#foreach ( $param in $endpoint.getParams().getParam() )
+					<label>$param</label> = <input class="form-control" type="text" class="params" name="$param"/>
+					#end
+				    </div>
+				    <div class="form-group col-md-6">
+					<label>Format:</label>
+					<select class="form-control">
+					    <option>RDF/XML</option>
+					    <option>TURTLE</option>
+					    <option>N-TRIPLES</option>
+					    <option>JSON-LD</option>
+					</select>
+				    </div>
+				</div>
+				<button type="button" class="btn btn-info" onclick="javascript:run_request(event, '$endpoint.getUrl()');">Run</button>
+			    </form>
+			    <textarea id="output-$endpoint.getUrl()" class="form-control" rows="6"></textarea>
+			</div>
+		    </div>
 		</div>
 	    </div>
 	    #end
